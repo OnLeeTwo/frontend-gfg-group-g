@@ -25,7 +25,13 @@ function Navbar() {
               <Link href="/contact" className="text-gray-700 hover:text-blue-500">Contact</Link>
             </li>
             <li>
-              <Link href="/contact" className="text-gray-700 hover:text-blue-500">Cart</Link>
+              <Link href="/cart" className="text-gray-700 hover:text-blue-500">Cart</Link>
+            </li>
+            <li>
+              <Link href="/login" className="text-gray-700 hover:text-blue-500">Login</Link>
+            </li>
+            <li>
+              <Link href="/register" className="text-gray-700 hover:text-blue-500">Register</Link>
             </li>
           </ul>
         </div>
