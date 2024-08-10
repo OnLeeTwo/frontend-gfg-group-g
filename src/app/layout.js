@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 // import Head from "next/head";
 import { ChakraProvider } from "@chakra-ui/react";
+import { AuthProvider } from "@/hooks/authContext";
 import "./globals.css";
 
 export const metadata = {
@@ -24,11 +25,13 @@ export default function RootLayout({ children }) {
         />
       </Head> */}
       <body>
-        <ChakraProvider>
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
-        </ChakraProvider>
+        <AuthProvider>
+          <ChakraProvider>
+            <Navbar />
+            <main>{children}</main>
+            <Footer />
+          </ChakraProvider>
+        </AuthProvider>
       </body>
     </html>
   );
