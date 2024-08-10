@@ -19,6 +19,7 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/authContext";
 
 const validationSchema = Yup.object({
   email: Yup.string().email("Invalid email address").required("Required"),
@@ -28,6 +29,7 @@ const validationSchema = Yup.object({
 export default function Login() {
   const toast = useToast();
   const router = useRouter();
+  const { setIsLoggedIn } = useAuth();
 
   const formik = useFormik({
     initialValues: {
@@ -62,8 +64,8 @@ export default function Login() {
           });
           localStorage.setItem("access_token", data.access_token);
           localStorage.setItem("refresh_token", data.refresh_token);
-          localStorage.setItem("user_id", data.user_id);
           localStorage.setItem("role", data.user_role);
+          setIsLoggedIn(true);
           router.push("/home");
         } else {
           throw new Error(data.error || "Login failed");
