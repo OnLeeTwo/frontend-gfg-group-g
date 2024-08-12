@@ -95,13 +95,6 @@ const ProductPage = () => {
   }
 
   let imageUrl = product.images;
-  let imageProvider = process.env.NEXT_PUBLIC_IMAGE_PROVIDER;
-
-  if (imageUrl) {
-    const parts = imageUrl.split("/");
-    const lastPart = parts[parts.length - 1];
-    imageUrl = `${imageProvider}/${lastPart}`;
-  }
 
   const price = typeof product.price === "number" ? product.price : 0;
 
