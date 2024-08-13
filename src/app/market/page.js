@@ -1,16 +1,24 @@
 import {
     Image,
+    Container,
+    Input,
+    InputRightAddon,
     Stack,
     Heading,
     Card,
     CardHeader,
+    Grid,
     ButtonGroup,
     Button,
     Text,
-    CardBody,
-    CardFooter,
-    Divider
+
+    Flex,
+    Box,
+    InputGroup,
+    InputLeftElement
 } from '@chakra-ui/react'
+import MarketCard from '@/components/MarketCard'
+
 
 import {
     Image,
