@@ -10,8 +10,9 @@ import {
     CardBody,
     CardFooter
 } from '@chakra-ui/react'
+import Link from 'next/link'
 
-export default function MarketCard({ name, description, image, location }) {
+export default function MarketCard({ id, name, description, image, location }) {
     return (
         <Card maxW='sm' variant="filled">
             <CardBody>
@@ -34,7 +35,9 @@ export default function MarketCard({ name, description, image, location }) {
             <CardFooter>
                 <ButtonGroup spacing='2'>
                     <Button variant='solid' colorScheme='blue'>
-                       View Product
+                       <Link href={`/market/${id}`}>
+                        View Detail Market
+                       </Link>
                     </Button>
                 </ButtonGroup>
             </CardFooter>
