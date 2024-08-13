@@ -1,46 +1,16 @@
 import {
-    Image,
     Container,
     Input,
     InputRightAddon,
-    Stack,
-    Heading,
-    Card,
-    CardHeader,
     Grid,
-    ButtonGroup,
     Button,
     Text,
-
     Flex,
     Box,
     InputGroup,
     InputLeftElement
 } from '@chakra-ui/react'
 import MarketCard from '@/components/MarketCard'
-
-
-import {
-    Image,
-    Container,
-    Input,
-    InputRightAddon,
-    Stack,
-    Heading,
-    Card,
-    CardHeader,
-    Grid,
-    ButtonGroup,
-    Button,
-    Text,
-
-    Flex,
-    Box,
-    InputGroup,
-    InputLeftElement
-} from '@chakra-ui/react'
-import MarketCard from '@/components/MarketCard'
-
 
 export default function Market() {
 
