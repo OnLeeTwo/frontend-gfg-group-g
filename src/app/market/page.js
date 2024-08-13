@@ -1,5 +1,19 @@
 import {
     Image,
+    Stack,
+    Heading,
+    Card,
+    CardHeader,
+    ButtonGroup,
+    Button,
+    Text,
+    CardBody,
+    CardFooter,
+    Divider
+} from '@chakra-ui/react'
+
+import {
+    Image,
     Container,
     Input,
     InputRightAddon,
