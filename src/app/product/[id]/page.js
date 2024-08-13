@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import axios from "axios";
+import useProductFetch from "@/hooks/productFetch";
 import {
   Box,
   Flex,
@@ -24,9 +24,6 @@ const ProductPage = () => {
   const { id } = useParams();
   const toast = useToast();
   const [token, setToken] = useState(null);
-  const [product, setProduct] = useState(null);
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
@@ -35,34 +32,7 @@ const ProductPage = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      if (!id || !token) return;
-
-      try {
-        setIsLoading(true);
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/product/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (response.data.success && response.data.data.length > 0) {
-          setProduct(response.data.data[0]);
-        } else {
-          setProduct(null);
-        }
-      } catch (err) {
-        setError(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchProduct();
-  }, [id, token]);
+  const { product, error, isLoading } = useProductFetch(id, token);
 
   if (isLoading) {
     return (
