@@ -8,6 +8,7 @@ import React from 'react'
 function Navbar() {
   const { isLoggedIn } = useAuth();
   const logout = useLogout();
+  console.log(isLoggedIn)
 
   return (
     <nav className=" bg-[#92c529] sticky py-2 shadow-md top-0 z-10">
@@ -42,16 +43,19 @@ function Navbar() {
               Logout
             </button>
           ) : (
+           <>
             <Link 
               href="/login" 
               className="text-gray-700 hover:text-blue-500"
             >
               Login
             </Link>
-            )}
-            <li>
+              <li>
               <Link href="/register" className="text-gray-700 hover:text-blue-500">Register</Link>
             </li>
+            </>
+            )}
+          
           </ul>
         </div>
       </nav>
