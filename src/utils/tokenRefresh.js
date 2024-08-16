@@ -3,7 +3,7 @@ import axios from "axios";
 export const refreshToken = async () => {
   try {
     const refreshToken = localStorage.getItem("refresh_token");
-    const response = await axios.post(
+    const response = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/refresh`,
       {
         refresh_token: refreshToken,
