@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import useProductFetch from "@/hooks/productFetch";
+import { AddIcon, MinusIcon, StarIcon } from "@chakra-ui/icons";
 import {
   Box,
   Flex,
@@ -18,6 +20,7 @@ import {
   VStack,
   HStack,
   Container,
+  IconButton,
 } from "@chakra-ui/react";
 
 const ProductPage = () => {
@@ -25,6 +28,9 @@ const ProductPage = () => {
   const toast = useToast();
   const [token, setToken] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [isInWishlist, setIsInWishlist] = useState(false);
+
+  const { product, error, isLoading } = useProductFetch(id, token);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -32,7 +38,77 @@ const ProductPage = () => {
     }
   }, []);
 
-  const { product, error, isLoading } = useProductFetch(id, token);
+  useEffect(() => {
+    if (token && product) {
+      checkWishlistStatus();
+    }
+  }, [token, product]);
+
+  const checkWishlistStatus = async () => {
+    if (!product) return;
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/wishlist/${product.id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setIsInWishlist(response.data.in_wishlist);
+    } catch (error) {
+      console.error("Error checking wishlist status:", error);
+    }
+  };
+
+  const handleWishlistToggle = async () => {
+    if (!token) {
+      toast({
+        title: "Error",
+        description: "Please login to manage your wishlist",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("product_id", product.id);
+      if (!isInWishlist) {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/wishlist`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+        });
+      } else {
+        await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/wishlist/${product.id}`,
+          {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+      }
+      setIsInWishlist(!isInWishlist);
+      toast({
+        title: "Success",
+        description: isInWishlist
+          ? "Product removed from wishlist"
+          : "Product added to wishlist",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An error occurred while updating the wishlist",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
 
   if (isLoading) {
     return (
@@ -81,15 +157,8 @@ const ProductPage = () => {
     }
 
     const cartItem = {
-      name: product.product_name,
       product_id: product.id,
       quantity: qty,
-      price: product.price,
-      total_price: qty * product.price,
-      market_id: product.market_id,
-      description: product.description,
-      category: product.category,
-      images: imageUrl,
     };
 
     const existingCart = JSON.parse(localStorage.getItem("cart")) || {};
@@ -138,7 +207,8 @@ const ProductPage = () => {
   };
 
   const handleBuyNow = (qty) => {
-    console.log(`Buying ${qty} item(s) now`);
+    handleAddToCart(qty);
+    router.push("/checkout");
   };
 
   const incrementQuantity = () => {
@@ -210,6 +280,17 @@ const ProductPage = () => {
             <Button colorScheme="blue" flex={1}>
               Buy Now
             </Button>
+            <IconButton
+              icon={<StarIcon />}
+              onClick={handleWishlistToggle}
+              aria-label={
+                isInWishlist ? "Remove from wishlist" : "Add to wishlist"
+              }
+              colorScheme={isInWishlist ? "red" : "gray"}
+              variant="ghost"
+              size="lg"
+              isRound
+            />
           </Stack>
 
           <Text fontSize="md">
