@@ -7,9 +7,10 @@ const ProfileSidebar = () => {
 
   return (
     <VStack align="stretch" spacing={3} position="sticky" top="20px">
-      <Link href="profile/account">Account Main</Link>
-      <Link href="profile/orders">Order History</Link>
-      <Link href="profile/wishlist">My Wishlist</Link>
+      <Link href="/profile/account">Account Main</Link>
+      <Link href="/profile/settings">Account Settings</Link>
+      <Link href="/profile/orders">Order History</Link>
+      <Link href="/profile/wishlist">My Wishlist</Link>
       <Button
         onClick={logout}
         className="text-gray-700 hover:text-blue-500"

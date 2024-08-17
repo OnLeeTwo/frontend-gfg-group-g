@@ -9,17 +9,136 @@ import {
   Button,
   VStack,
   HStack,
-  Divider,
   useToast,
   Container,
   Checkbox,
+  Spinner,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
+import useFetchProduct from "@/hooks/productFetch.js";
+
+const CartItem = ({
+  item,
+  onRemove,
+  onQuantityChange,
+  isSelected,
+  onToggleSelect,
+}) => {
+  const productId = item.product_id;
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("access_token");
+    if (storedToken) setToken(storedToken);
+  }, []);
+
+  const { product, error, isLoading } = useFetchProduct(productId, token);
+
+  if (isLoading) {
+    return (
+      <Flex justify="center" align="center" h="80vh">
+        <Spinner size="xl" />
+      </Flex>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box mt={10}>
+        <Alert status="error">
+          <AlertIcon />
+          {error.message || "An error occurred while fetching the product."}
+        </Alert>
+      </Box>
+    );
+  }
+
+  if (!product) {
+    return (
+      <Box mt={10}>
+        <Alert status="info">
+          <AlertIcon />
+          No product found.
+        </Alert>
+      </Box>
+    );
+  }
+
+  return (
+    <Box
+      bg="white"
+      p={4}
+      borderRadius="md"
+      mb={2}
+      cursor="pointer"
+      onClick={onToggleSelect}
+      borderWidth="1px"
+      borderColor={isSelected ? "blue.500" : "gray.200"}
+    >
+      <Flex align="center">
+        <Checkbox
+          isChecked={isSelected}
+          onChange={onToggleSelect}
+          mr={4}
+          pointerEvents="none"
+        />
+        <Image
+          src={product.images}
+          alt={product.product_name}
+          boxSize="100px"
+          objectFit="cover"
+          mr={4}
+        />
+        <VStack align="start" flex={1}>
+          <Text fontWeight="bold">{product.product_name}</Text>
+          <Text>Category: {product.category}</Text>
+          <HStack>
+            <Button
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                onQuantityChange(item.quantity - 1);
+              }}
+            >
+              -
+            </Button>
+            <Text>{item.quantity}</Text>
+            <Button
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                onQuantityChange(item.quantity + 1);
+              }}
+            >
+              +
+            </Button>
+          </HStack>
+        </VStack>
+        <VStack align="end">
+          <Text fontWeight="bold">Rp{product.price.toFixed(2)}</Text>
+          <Button
+            leftIcon={<DeleteIcon />}
+            colorScheme="red"
+            variant="ghost"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemove();
+            }}
+          >
+            Remove
+          </Button>
+        </VStack>
+      </Flex>
+    </Box>
+  );
+};
 
 const CartPage = () => {
   const [cart, setCart] = useState({});
   const [selectedItems, setSelectedItems] = useState([]);
-
   const toast = useToast();
 
   useEffect(() => {
@@ -48,7 +167,6 @@ const CartPage = () => {
     );
     if (item) {
       item.quantity = Math.max(1, newQuantity);
-      item.total_price = item.quantity * item.price;
       updateCart(newCart);
     }
   };
@@ -63,7 +181,9 @@ const CartPage = () => {
     }
     updateCart(newCart);
     setSelectedItems((prev) =>
-      prev.filter((item) => item.productId !== productId)
+      prev.filter(
+        (item) => item.productId !== productId || item.marketId !== marketId
+      )
     );
     toast({
       title: "Item removed",
@@ -71,18 +191,6 @@ const CartPage = () => {
       duration: 2000,
       isClosable: true,
     });
-  };
-
-  const calculateTotal = () => {
-    return selectedItems
-      .filter((item) => item.selected)
-      .reduce((total, selectedItem) => {
-        const marketItems = cart[selectedItem.marketId];
-        const item = marketItems.find(
-          (item) => item.product_id === selectedItem.productId
-        );
-        return total + item.total_price;
-      }, 0);
   };
 
   const toggleSelectItem = (marketId, productId) => {
@@ -117,8 +225,18 @@ const CartPage = () => {
     }
 
     console.log("Items to checkout:", itemsToCheckout);
-    // Proceed with checkout logic here, using `itemsToCheckout`.
+    // Proceed with checkout logic here
   };
+
+  const totalAmount = selectedItems
+    .filter((item) => item.selected)
+    .reduce((acc, selectedItem) => {
+      const marketItems = cart[selectedItem.marketId];
+      const item = marketItems.find(
+        (marketItem) => marketItem.product_id === selectedItem.productId
+      );
+      return acc + item.quantity * item.price;
+    }, 0);
 
   return (
     <Container maxW="container.xl" py={10}>
@@ -133,107 +251,23 @@ const CartPage = () => {
                 Market: {marketId}
               </Text>
               {items.map((item) => (
-                <Box
-                  key={item.product_id}
-                  bg="white"
-                  p={4}
-                  borderRadius="md"
-                  mb={2}
-                  cursor="pointer"
-                  onClick={() => toggleSelectItem(marketId, item.product_id)}
-                  borderWidth={
-                    selectedItems.find(
-                      (selected) =>
-                        selected.productId === item.product_id &&
-                        selected.marketId === marketId &&
-                        selected.selected
-                    )
-                      ? "1px"
-                      : "1px"
+                <CartItem
+                  key={`${marketId}-${item.product_id}`}
+                  item={item}
+                  onRemove={() => removeItem(marketId, item.product_id)}
+                  onQuantityChange={(newQuantity) =>
+                    updateQuantity(marketId, item.product_id, newQuantity)
                   }
-                  borderColor={
-                    selectedItems.find(
-                      (selected) =>
-                        selected.productId === item.product_id &&
-                        selected.marketId === marketId &&
-                        selected.selected
-                    )
-                      ? "blue.500"
-                      : "gray.200"
+                  isSelected={selectedItems.find(
+                    (selected) =>
+                      selected.productId === item.product_id &&
+                      selected.marketId === marketId &&
+                      selected.selected
+                  )}
+                  onToggleSelect={() =>
+                    toggleSelectItem(marketId, item.product_id)
                   }
-                >
-                  <Flex align="center">
-                    <Checkbox
-                      isChecked={
-                        selectedItems.find(
-                          (selected) =>
-                            selected.productId === item.product_id &&
-                            selected.marketId === marketId
-                        )?.selected
-                      }
-                      onChange={(e) =>
-                        toggleSelectItem(marketId, item.product_id)
-                      }
-                      mr={4}
-                      pointerEvents="none"
-                    />
-                    <Image
-                      src={item.images}
-                      alt={item.name}
-                      boxSize="100px"
-                      objectFit="cover"
-                      mr={4}
-                    />
-                    <VStack align="start" flex={1}>
-                      <Text fontWeight="bold">{item.name}</Text>
-                      <Text>Category: {item.category}</Text>
-                      <HStack>
-                        <Button
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            updateQuantity(
-                              marketId,
-                              item.product_id,
-                              item.quantity - 1
-                            );
-                          }}
-                        >
-                          -
-                        </Button>
-                        <Text>{item.quantity}</Text>
-                        <Button
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            updateQuantity(
-                              marketId,
-                              item.product_id,
-                              item.quantity + 1
-                            );
-                          }}
-                        >
-                          +
-                        </Button>
-                      </HStack>
-                    </VStack>
-                    <VStack align="end">
-                      <Text fontWeight="bold">Rp{item.price.toFixed(2)}</Text>
-                      <Button
-                        leftIcon={<DeleteIcon />}
-                        colorScheme="red"
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          removeItem(marketId, item.product_id);
-                        }}
-                      >
-                        Remove
-                      </Button>
-                    </VStack>
-                  </Flex>
-                </Box>
+                />
               ))}
             </Box>
           ))}
@@ -243,19 +277,7 @@ const CartPage = () => {
             <Text fontSize="xl" fontWeight="bold" mb={4}>
               Summary
             </Text>
-            <Flex justify="space-between" mb={2}>
-              <Text>Products</Text>
-              <Text>Rp{calculateTotal().toFixed(2)}</Text>
-            </Flex>
-            <Flex justify="space-between" mb={4}>
-              <Text>Shipping</Text>
-              <Text>Free</Text>
-            </Flex>
-            <Divider my={2} />
-            <Flex justify="space-between" fontWeight="bold" mb={4}>
-              <Text>Total amount</Text>
-              <Text>Rp{calculateTotal().toFixed(2)}</Text>
-            </Flex>
+            <Text mb={2}>Total: Rp{totalAmount.toFixed(2)}</Text>
             <Button colorScheme="blue" width="full" onClick={handleCheckout}>
               GO TO CHECKOUT
             </Button>
