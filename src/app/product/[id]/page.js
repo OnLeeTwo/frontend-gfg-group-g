@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import { StarIcon } from "@chakra-ui/icons";
 import useProductFetch from "@/hooks/productFetch";
+import { AddIcon, MinusIcon, StarIcon } from "@chakra-ui/icons";
 import {
   Box,
   Flex,
@@ -45,9 +46,10 @@ const ProductPage = () => {
   }, [token, product]);
 
   const checkWishlistStatus = async () => {
+    if (!product) return;
     try {
       const response = await axios.get(
-        `/${process.env.NEXT_PUBLIC_API_URL}/wishlist/${product.id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/wishlist/${product.id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -73,7 +75,13 @@ const ProductPage = () => {
     try {
       const formData = new FormData();
       formData.append("product_id", product.id);
-      if (isInWishlist) {
+      if (!isInWishlist) {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/wishlist`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+        });
+      } else {
         await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/wishlist/${product.id}`,
           {
@@ -156,15 +164,8 @@ const ProductPage = () => {
     }
 
     const cartItem = {
-      name: product.product_name,
       product_id: product.id,
       quantity: qty,
-      price: product.price,
-      total_price: qty * product.price,
-      market_id: product.market_id,
-      description: product.description,
-      category: product.category,
-      images: imageUrl,
     };
 
     const existingCart = JSON.parse(localStorage.getItem("cart")) || {};
@@ -214,6 +215,8 @@ const ProductPage = () => {
 
   const handleBuyNow = (qty) => {
     handleAddToCart(qty);
+    router.push("/checkout");
+
   };
 
   const incrementQuantity = () => {

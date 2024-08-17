@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import useFetchUser from "@/hooks/userFetch";
-import ProfileLayout from "@/components/layout/ProfileLayout";
 import AddressForm from "../AddressForm";
 import {
   Box,
@@ -11,9 +10,7 @@ import {
   Heading,
   Text,
   Button,
-  Container,
   Grid,
-  GridItem,
   useToast,
   Spinner,
   Alert,
@@ -40,19 +37,13 @@ const UserProfile = () => {
     onClose: onProfileClose,
   } = useDisclosure();
   const {
-    isOpen: isAccountOpen,
-    onOpen: onAccountOpen,
-    onClose: onAccountClose,
-  } = useDisclosure();
-  const {
     isOpen: isAddressOpen,
     onOpen: onAddressOpen,
     onClose: onAddressClose,
   } = useDisclosure();
   const [profilePicture, setProfilePicture] = useState(null);
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(null);
   const [addresses, setAddresses] = useState([]);
   const [editingAddress, setEditingAddress] = useState(null);
 
@@ -104,45 +95,6 @@ const UserProfile = () => {
     } catch (error) {
       toast({
         title: "Error updating profile",
-        description: error.message,
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-  };
-
-  const handleAccountUpdate = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("email", email);
-    formData.append("password", password);
-
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      if (response.ok) {
-        toast({
-          title: "Account updated successfully",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
-        mutate();
-        onAccountClose();
-      } else {
-        throw new Error("Failed to update account");
-      }
-    } catch (error) {
-      toast({
-        title: "Error updating account",
         description: error.message,
         status: "error",
         duration: 3000,
@@ -285,9 +237,6 @@ const UserProfile = () => {
             <Button onClick={onProfileOpen} mt={2}>
               Edit Profile
             </Button>
-            <Button onClick={onAccountOpen} mt={2} ml={2}>
-              Edit Account
-            </Button>
           </Box>
         </Flex>
 
@@ -372,37 +321,6 @@ const UserProfile = () => {
               </FormControl>
               <Button mt={4} colorScheme="blue" type="submit">
                 Update Profile
-              </Button>
-            </form>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-
-      <Modal isOpen={isAccountOpen} onClose={onAccountClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Edit Account</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <form onSubmit={handleAccountUpdate}>
-              <FormControl>
-                <FormLabel>Email</FormLabel>
-                <Input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </FormControl>
-              <FormControl mt={4}>
-                <FormLabel>New Password</FormLabel>
-                <Input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </FormControl>
-              <Button mt={4} colorScheme="blue" type="submit">
-                Update Account
               </Button>
             </form>
           </ModalBody>
