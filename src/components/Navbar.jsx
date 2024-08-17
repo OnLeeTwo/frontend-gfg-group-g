@@ -8,7 +8,6 @@ import React from 'react'
 function Navbar() {
   const { isLoggedIn } = useAuth();
   const logout = useLogout();
-  console.log(isLoggedIn)
 
   return (
     <nav className=" bg-[#92c529] sticky py-2 shadow-md top-0 z-10">
