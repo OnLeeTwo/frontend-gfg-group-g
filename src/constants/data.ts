@@ -3,7 +3,7 @@ import { NavItem } from "../types";
 export type User = {
   id: number;
   name: string;
-  company: string;
+  email: string;
   role: string;
   verified: boolean;
   status: string;
@@ -12,80 +12,80 @@ export const users: User[] = [
   {
     id: 1,
     name: 'Candice Schiner',
-    company: 'Dell',
-    role: 'Frontend Developer',
+    email: 'Candice Schiner@gmail.com',
+    role: 'Buyer',
     verified: false,
     status: 'Active'
   },
   {
     id: 2,
     name: 'John Doe',
-    company: 'TechCorp',
-    role: 'Backend Developer',
+    email: 'John Doe@gmail.com',
+    role: 'Buyer',
     verified: true,
     status: 'Active'
   },
   {
     id: 3,
     name: 'Alice Johnson',
-    company: 'WebTech',
-    role: 'UI Designer',
+    email: 'Alice Johnson@gmail.com',
+    role: 'Seller',
     verified: true,
     status: 'Active'
   },
   {
     id: 4,
     name: 'David Smith',
-    company: 'Innovate Inc.',
-    role: 'Fullstack Developer',
+    email: 'David Smith@gmail.com',
+    role: 'Seller',
     verified: false,
     status: 'Inactive'
   },
   {
     id: 5,
     name: 'Emma Wilson',
-    company: 'TechGuru',
-    role: 'Product Manager',
+    email: 'Emma Wilson@gmail.com',
+    role: 'Buyer',
     verified: true,
     status: 'Active'
   },
   {
     id: 6,
     name: 'James Brown',
-    company: 'CodeGenius',
-    role: 'QA Engineer',
+    email: 'James Brown@gmail.com',
+    role: 'Seller',
     verified: false,
     status: 'Active'
   },
   {
     id: 7,
     name: 'Laura White',
-    company: 'SoftWorks',
-    role: 'UX Designer',
+    email: 'Laura White@gmail.com',
+    role: 'Seller',
     verified: true,
     status: 'Active'
   },
   {
     id: 8,
     name: 'Michael Lee',
-    company: 'DevCraft',
-    role: 'DevOps Engineer',
+    email: 'Michael Lee@gmail.com',
+    role: 'Buyer',
     verified: false,
     status: 'Active'
   },
   {
     id: 9,
     name: 'Olivia Green',
-    company: 'WebSolutions',
-    role: 'Frontend Developer',
+    email: 'Olivia Green@gmail.com',
+    role: 'Buyer',
     verified: true,
     status: 'Active'
   },
   {
     id: 10,
     name: 'Robert Taylor',
-    company: 'DataTech',
-    role: 'Data Analyst',
+    email: 'Robert Taylor@gmail.com',
+    role: 'Seller',
     verified: false,
     status: 'Active'
   }
@@ -119,7 +119,7 @@ export const navItems: NavItem[] = [
   },
   {
     title: 'User',
-    href: 'seller/user',
+    href: 'seller/users',
     icon: 'user',
     label: 'user'
   },
