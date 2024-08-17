@@ -14,7 +14,7 @@ import Link from 'next/link'
 
 export default function MarketCard({ id, name, description, image, location }) {
     return (
-        <Card maxW='sm' variant="filled">
+        <Card maxW='sm' variant="filled" height={400}>
             <CardBody>
                 <Image
                     src={image}
