@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
 import { useParams } from "next/navigation";
+import { StarIcon } from "@chakra-ui/icons";
 import useProductFetch from "@/hooks/productFetch";
 import { AddIcon, MinusIcon, StarIcon } from "@chakra-ui/icons";
 import {
@@ -88,6 +89,12 @@ const ProductPage = () => {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
+      } else {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/wishlist`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+        });
       }
       setIsInWishlist(!isInWishlist);
       toast({
@@ -209,6 +216,7 @@ const ProductPage = () => {
   const handleBuyNow = (qty) => {
     handleAddToCart(qty);
     router.push("/checkout");
+
   };
 
   const incrementQuantity = () => {
