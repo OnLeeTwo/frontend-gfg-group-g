@@ -210,7 +210,10 @@ const CheckoutPage = () => {
       try {
         const formData = new FormData();
         formData.append("cart", order.cart);
-        formData.append("code", order.promotion_code);
+        // Only append the code if it exists
+        if (order.promotion_code) {
+          formData.append("code", order.promotion_code);
+        }
         formData.append("shipping_address", JSON.stringify(selectedAddress));
 
         const response = await fetch(
