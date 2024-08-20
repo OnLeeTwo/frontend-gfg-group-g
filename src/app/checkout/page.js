@@ -97,7 +97,7 @@ const CheckoutPage = () => {
     return 10000;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const selectedAddress = getSelectedAddress();
     if (!selectedAddress) {
