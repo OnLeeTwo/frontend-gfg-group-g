@@ -1,124 +1,222 @@
-"use client";
-
-import { Button } from "@/components/Button";
-import { useDataPaginate } from "@/hooks/usePaginate";
+import React, { useState, useEffect } from "react";
 import {
-  Container,
-  Stack,
-  Input,
-  Grid,
-  Flex,
   Box,
+  Flex,
+  VStack,
+  Heading,
+  Text,
+  Checkbox,
+  Input,
+  Select,
+  SimpleGrid,
+  Image,
+  Badge,
+  Button,
+  Spinner,
   Alert,
   AlertIcon,
-  Select,
 } from "@chakra-ui/react";
-import { useParams } from "next/navigation";
-import ProductCard from "@/components/ProductCard";
-import { useState } from "react";
-import { LoadingPage } from "@/components/Loading";
 
 const ProductPage = () => {
-  const { id } = useParams()
-  const [search, setSearch] = useState("")
-  const [name, setName] = useState("")
-  const [limit, setLimit] = useState(5)
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [filters, setFilters] = useState({
+    category: [],
+    location: [],
+    priceMin: "",
+    priceMax: "",
+  });
+  const [sortOption, setSortOption] = useState("");
 
-  const {
-    nextPage,
-    prevPage,
-    data,
-    currentPage,
-    totalPage,
-    error,
-    isLoading
-  } = useDataPaginate(
-    `${process.env.NEXT_PUBLIC_API_URL}/products`, limit, search
-  )
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
-  const handleSubmit = () => { 
-    setSearch(name)
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/products`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch products");
+      }
+      const data = await response.json();
+      if (data.success) {
+        setProducts(data.data);
+      } else {
+        throw new Error(data.message || "Failed to fetch products");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCategoryFilter = (category) => {
+    setFilters((prev) => ({
+      ...prev,
+      category: prev.category.includes(category)
+        ? prev.category.filter((c) => c !== category)
+        : [...prev.category, category],
+    }));
+  };
+
+  const handleLocationFilter = (location) => {
+    // Placeholder for location filter (not in your current data model)
+    console.log("Filter by location:", location);
+  };
+
+  const handlePriceFilter = () => {
+    // This function will be called when the Apply button is clicked
+    console.log("Applying price filter:", filters.priceMin, filters.priceMax);
+  };
+
+  const handleSort = (option) => {
+    setSortOption(option);
+    // Implement sorting logic here
+  };
+
+  const filteredProducts = products
+    .filter(
+      (product) =>
+        (filters.category.length === 0 ||
+          filters.category.includes(product.category)) &&
+        (filters.priceMin === "" ||
+          product.price >= Number(filters.priceMin)) &&
+        (filters.priceMax === "" || product.price <= Number(filters.priceMax))
+    )
+    .sort((a, b) => {
+      if (sortOption === "price-asc") return a.price - b.price;
+      if (sortOption === "price-desc") return b.price - a.price;
+      return 0; // Default or 'relevance' sorting
+    });
+
+  if (loading) {
+    return (
+      <Flex justify="center" align="center" height="100vh">
+        <Spinner size="xl" />
+      </Flex>
+    );
+  }
+
+  if (error) {
+    return (
+      <Alert status="error">
+        <AlertIcon />
+        {error}
+      </Alert>
+    );
   }
 
   return (
-    <Container maxW="container.xl" py={10}>
-      <Flex direction={{ base: "column", md: "column"}} gap={3}>
-        <Box>
-          <Stack spacing={4} marginBottom={4} direction={"row"}>
-            <Input
-              placeholder="Search product"
-              value={name}
-              onChange={(e) => setName(e.target.value)} 
-            />
-            <Button CTA="Cari" onClick={handleSubmit} />
-          </Stack>
-        </Box>
-        <Box maxWidth="100%" overflowX="auto" padding={4}>
-           {isLoading ? (
-            <LoadingPage />
-          ) : error ? (  <Box mt={10} mb={10}>
-            <Alert status="error">
-              <AlertIcon />
-                Product tidak ditemukan
-            </Alert>
-          </Box>) :
-          data.length === 0 ? (
-            <Box mt={10} mb={10}>
-              <Alert status="warning">
-                <AlertIcon />
-                Market tidak ditemukan
-              </Alert>
-            </Box>
-          )  : (
-            <Grid templateColumns="repeat(3, 1fr)" gap={3}>
-              {data.map((item) => (
-                <div key={item.id}>
-                  <ProductCard
-                    name={item.product_name}
-                    description={item.description}
-                    image={item.images}
-                    market={item.market_name}
-                    price={item.price}
-                    stock={item.stock}
-                    category={item.category}
-                    id={item.market_id}
-                  />
-                </div>
-              ))}
-            </Grid>
-          )
-        }
-        </Box>
-        <div className="flex flex-row justify-end items-center gap-12 mt-12">
-          <Box p={4}>
-            <Select
-              sx={{ width: "100px" }}
-              value={limit}
-              onChange={(e) => setLimit(e.target.value)}
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={25}>25</option>
-              <option value={50}>50</option>
-              <option value={100}>100</option>
-            </Select>
+    <Flex>
+      {/* Sidebar */}
+      <Box width="250px" p={4} borderRight="1px" borderColor="gray.200">
+        <VStack align="stretch" spacing={6}>
+          <Box>
+            <Heading size="md" mb={2}>
+              Filter
+            </Heading>
           </Box>
-          <Button
-            CTA="Previous"
-            onClick={prevPage}
-            disabled={currentPage === 1 && true}
-          />
-          <Button
-            CTA="Next"
-            onClick={nextPage}
-            disabled={currentPage === totalPage && true}
-          />
-        </div>
 
+          <Box>
+            <Heading size="sm" mb={2}>
+              Category
+            </Heading>
+            <VStack align="stretch">
+              {/* Dynamically generate checkboxes based on unique categories */}
+              {[...new Set(products.map((p) => p.category))].map((category) => (
+                <Checkbox
+                  key={category}
+                  onChange={() => handleCategoryFilter(category)}
+                  isChecked={filters.category.includes(category)}
+                >
+                  {category}
+                </Checkbox>
+              ))}
+            </VStack>
+          </Box>
 
-      </Flex>
-      
-    </Container>
+          <Box>
+            <Heading size="sm" mb={2}>
+              Price
+            </Heading>
+            <Flex>
+              <Input
+                placeholder="Min"
+                type="number"
+                mr={2}
+                value={filters.priceMin}
+                onChange={(e) =>
+                  setFilters((prev) => ({ ...prev, priceMin: e.target.value }))
+                }
+              />
+              <Input
+                placeholder="Max"
+                type="number"
+                value={filters.priceMax}
+                onChange={(e) =>
+                  setFilters((prev) => ({ ...prev, priceMax: e.target.value }))
+                }
+              />
+            </Flex>
+            <Button mt={2} onClick={handlePriceFilter}>
+              Apply
+            </Button>
+          </Box>
+        </VStack>
+      </Box>
+
+      {/* Main Content */}
+      <Box flex={1} p={4}>
+        <Flex justify="space-between" mb={4}>
+          <Text>Showing {filteredProducts.length} products</Text>
+          <Select
+            placeholder="Sort by"
+            onChange={(e) => handleSort(e.target.value)}
+            value={sortOption}
+          >
+            <option value="relevance">Most Relevant</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+          </Select>
+        </Flex>
+
+        <SimpleGrid columns={5} spacing={4}>
+          {filteredProducts.map((product) => (
+            <Box
+              key={product.id}
+              borderWidth="1px"
+              borderRadius="lg"
+              overflow="hidden"
+            >
+              <Image src={product.images} alt={product.product_name} />
+              <Box p={3}>
+                <Heading size="sm" mb={2}>
+                  {product.product_name}
+                </Heading>
+                <Text fontWeight="bold" mb={2}>
+                  Rp{product.price.toLocaleString()}
+                </Text>
+                <Flex align="center" mb={2}>
+                  <Badge
+                    colorScheme={product.is_premium ? "yellow" : "gray"}
+                    mr={1}
+                  >
+                    {product.is_premium ? "Premium" : "Standard"}
+                  </Badge>
+                  <Text fontSize="sm">Stock: {product.stock}</Text>
+                </Flex>
+                <Text fontSize="sm">{product.category}</Text>
+              </Box>
+            </Box>
+          ))}
+        </SimpleGrid>
+      </Box>
+    </Flex>
   );
 };
 
