@@ -62,10 +62,6 @@ const UserWishlist = () => {
     fetchWishlist();
   }, [fetchWishlist]);
 
-  const handleRefresh = () => {
-    fetchWishlist();
-  };
-
   if (isLoading) {
     return (
       <Flex justify="center" align="center" height="100vh">
@@ -78,7 +74,6 @@ const UserWishlist = () => {
     return (
       <VStack align="center" justify="center" height="100vh" spacing={4}>
         <Text>Error: {error}</Text>
-        <Button onClick={handleRefresh}>Retry</Button>
       </VStack>
     );
   }
@@ -111,8 +106,6 @@ const UserWishlist = () => {
           </Flex>
         </Box>
       )}
-
-      <Button onClick={handleRefresh}>Refresh Wishlist</Button>
     </VStack>
   );
 };

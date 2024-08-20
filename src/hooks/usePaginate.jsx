@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 
-export const useDataPaginate = (ApiEndpoint, dataLimit, nameSearch='') => {
+export const useDataPaginate = (ApiEndpoint, dataLimit, nameSearch) => {
   const [data, setData] = useState([]);
   const [totalPage, setTotalPage] = useState(1)
   const [currentPage, setCurrentPage] = useState(1);
@@ -11,6 +11,7 @@ export const useDataPaginate = (ApiEndpoint, dataLimit, nameSearch='') => {
   const fetchData = useCallback(async () => {
     try {
       setIsLoading(true)
+      setError(null)
       const response = await axios.get(
         `${ApiEndpoint}?name=${nameSearch}&page=${currentPage}&per_page=${dataLimit}`
       );
@@ -21,7 +22,7 @@ export const useDataPaginate = (ApiEndpoint, dataLimit, nameSearch='') => {
     } finally {
       setIsLoading(false)
     }
-  }, [ApiEndpoint, currentPage, dataLimit]);
+  }, [ApiEndpoint, currentPage, dataLimit, nameSearch]);
 
   useEffect(() => {
     fetchData();

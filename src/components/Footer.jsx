@@ -42,7 +42,8 @@ const Footer = () => {
         </Box>
         <Box className="company">
           <Heading as="h4" size="md" mb={4}>
-            <Image src="/logo.png" alt="sucomart logo" display="inline-block" mr={2} />
+            <Image src="/logo.png" alt="sucomart logo" boxSize="200px"
+          objectFit="cover" mr={2} />
           </Heading>
           <Stack spacing={2} mb={4}>
             <Link href="#" color="teal.300">

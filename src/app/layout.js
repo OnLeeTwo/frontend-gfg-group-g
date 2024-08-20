@@ -2,7 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 // import Head from "next/head";
 import { ChakraProvider } from "@chakra-ui/react";
-import { AuthProvider } from "../hooks/authContext";
+import { AuthProvider } from "@/hooks/authContext";
 import "./globals.css";
 
 export const metadata = {

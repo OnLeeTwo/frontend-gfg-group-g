@@ -4,7 +4,6 @@ import {
     Heading,
     Card,
     ButtonGroup,
-    Divider,
     Button,
     Text,
     CardBody,
@@ -12,31 +11,28 @@ import {
 } from '@chakra-ui/react'
 import Link from 'next/link'
 
-export default function MarketCard({ id, name, description, image, location }) {
+export default function MarketCard({ id, name, image, location }) {
     return (
-        <Card maxW='sm' variant="filled" height={400}>
+        <Card maxW='sm' variant="outlined" backgroundColor='#C6A969' minHeight={300} maxHeight={700}>
             <CardBody>
                 <Image
                     src={image}
-                    alt='Green double couch with wooden legs'
-                    borderRadius='lg'
+                    alt={`Market ${name} on ${location}`}
+                    borderRadius='sm'
                 />
-                <Stack mt='6' spacing='3'>
+                <Stack mt='2' spacing='1'>
                     <Heading size='md'>{name}</Heading>
-                    <Text>
-                       {description}
-                    </Text>
-                    <Text color='blue.600' fontSize='2xl'>
+                    <Text color='white' fontSize='sm'>
                         {location}
                     </Text>
                 </Stack>
             </CardBody>
-            <Divider />
+           
             <CardFooter>
                 <ButtonGroup spacing='2'>
-                    <Button variant='solid' colorScheme='blue'>
-                       <Link href={`/market/${id}`}>
-                        View Detail Market
+                    <Button variant='solid' colorScheme='blue' size="xs">
+                     <Link href={`/market/${id}`}>
+                        View Market
                        </Link>
                     </Button>
                 </ButtonGroup>

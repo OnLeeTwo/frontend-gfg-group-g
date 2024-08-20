@@ -1,121 +1,125 @@
-'use client'
+"use client";
 
-import ProductCard from "@/components/ProductCard"
-import SearchBar from "@/components/SearchBar"
+import { Button } from "@/components/Button";
+import { useDataPaginate } from "@/hooks/usePaginate";
 import {
+  Container,
+  Stack,
+  Input,
+  Grid,
+  Flex,
+  Box,
   Alert,
   AlertIcon,
-  Box,
-  Flex,
-  Spinner,
-  Container,
-  useToast,
-  Grid
-} from "@chakra-ui/react"
-import axios from "axios"
-import { useParams } from "next/navigation"
-import { useEffect, useState } from "react"
+  Select,
+} from "@chakra-ui/react";
+import { useParams } from "next/navigation";
+import ProductCard from "@/components/ProductCard";
+import { useState } from "react";
+import { LoadingPage } from "@/components/Loading";
 
-export default function MarketPage() {
+const MarketPage = () => {
   const { id } = useParams()
-  const [market, setMarket] = useState([])
-  const toast = useToast()
-  const [product, setProduct] = useState([])
-  const [error, setError] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [search, setSearch] = useState("")
+  const [name, setName] = useState("")
+  const [limit, setLimit] = useState(5)
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        setIsLoading(true)
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/products_market/${id}`
-        )
-      
-        if(res.data.success && res.data.data.length > 0 ) {
-          setProduct(res.data.data)
-        }else {
-          setProduct([])
-        }
-      } catch (err) {
-        setError(err)
-      } finally {
-        setIsLoading(false)
-      }
-    }
+  const {
+    nextPage,
+    prevPage,
+    data,
+    currentPage,
+    totalPage,
+    error,
+    isLoading
+  } = useDataPaginate(
+    `${process.env.NEXT_PUBLIC_API_URL}/products_market/${id}`, limit, search
+  )
 
-    const fetchMarket = async() => {
-      try{
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/markets/${id}`
-        )
-
-        setMarket(res.data)
-      }catch(err) {
-        setError(err)
-      }
-    }
-
-    setTimeout(() => {
-      fetchProduct()
-    }, 5000)
-    fetchMarket()
-  }, [id])
-
-  if (error) {
-    return (
-      <Flex mt={20} mb={20} alignItems='center' justifyContent='center'>
-        <Alert status="error">
-          <AlertIcon />
-          {error.message || "An error occurred while fetching this market."}
-        </Alert>
-      </Flex>
-    );
+  const handleSubmit = () => { 
+    setSearch(name)
   }
-
-  if (isLoading) {
-    return (
-      <Flex justify="center" align="center" h="80vh">
-        <Spinner size="xl" />
-      </Flex>
-    )
-  }
-
-  if (product.length < 1) {
-    return (
-      <Flex mt='2' alignItems='center' justifyContent='center'>
-        <Alert status="info">
-          <AlertIcon />
-          No Product found.
-        </Alert>
-      </Flex>
-    );
-  }
-
- 
 
   return (
     <Container maxW="container.xl" py={10}>
-      <SearchBar parameters={`Cari product terbaru di market ${market.market_name} ...`} />
-      <Flex direction={{ base: "column", md: "column" }} gap={3}>
+      <Flex direction={{ base: "column", md: "column"}} gap={3}>
         <Box>
-          <Grid templateColumns='repeat(5, 1fr)' gap={6}>
-            {product.map((item) => (
-              <div key={item}>
-                <ProductCard
-                  name={item.product_name}
-                  image={item.images}
-                  description="Ini deskripsi market"
-                  location={item.location}
-                  price={item.price}
-                  category={item.category}
-                />
-              </div>
-            ))
-            }
-          </Grid>
+          <Stack spacing={4} marginBottom={4} direction={"row"}>
+            <Input
+              placeholder="Search product on this market"
+              value={name}
+              onChange={(e) => setName(e.target.value)} 
+            />
+            <Button CTA="Cari" onClick={handleSubmit} />
+          </Stack>
         </Box>
+        <Box maxWidth="100%" overflowX="auto" padding={4}>
+           {isLoading ? (
+            <LoadingPage />
+          ) : error ? (  <Box mt={10} mb={10}>
+            <Alert status="error">
+              <AlertIcon />
+                Product tidak ditemukan
+            </Alert>
+          </Box>) :
+          data.length === 0 ? (
+            <Box mt={10} mb={10}>
+              <Alert status="warning">
+                <AlertIcon />
+                Market tidak ditemukan
+              </Alert>
+            </Box>
+          )  : (
+            <Grid templateColumns="repeat(3, 1fr)" gap={3}>
+              {data.map((item) => (
+                <div key={item.id}>
+                  <ProductCard
+                    name={item.product_name}
+                    description={item.description}
+                    image={item.images}
+                    market={item.market_name}
+                    price={item.price}
+                    stock={item.stock}
+                    category={item.category}
+                    id={item.market_id}
+                  />
+                </div>
+              ))}
+            </Grid>
+          )
+        }
+        </Box>
+        <div className="flex flex-row justify-end items-center gap-12 mt-12">
+          <Box p={4}>
+            <Select
+              sx={{ width: "100px" }}
+              value={limit}
+              onChange={(e) => setLimit(e.target.value)}
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+            </Select>
+          </Box>
+          <Button
+            CTA="Previous"
+            onClick={prevPage}
+            disabled={currentPage === 1 && true}
+          />
+          <Button
+            CTA="Next"
+            onClick={nextPage}
+            disabled={currentPage === totalPage && true}
+          />
+        </div>
+
+
       </Flex>
+      
     </Container>
-  )
-}
+  );
+};
+
+export default MarketPage;
