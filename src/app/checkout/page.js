@@ -99,9 +99,138 @@ const CheckoutPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Implement order submission logic
-    console.log("Order submitted");
+    const selectedAddress = getSelectedAddress();
+    if (!selectedAddress) {
+      toast({
+        title: "Please select an address",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    const marketOrders = Object.entries(cartProducts).map(
+      ([marketId, marketData]) => {
+        const cartItems = checkoutCart[marketId].map((item) => ({
+          product_id: item.product_id,
+          quantity: item.quantity,
+        }));
+        return {
+          market_id: marketId,
+          cart: JSON.stringify({ [marketId]: cartItems }),
+          promotion_code: promoCodes[marketId] || "",
+        };
+      }
+    );
+
+    console.log(marketOrders);
+
+    let successfulOrders = [];
+    let successfulMarketIds = [];
+    let failedOrders = [];
+
+    for (let i = 0; i < marketOrders.length; i++) {
+      const order = marketOrders[i];
+      try {
+        const formData = new FormData();
+        formData.append("cart", order.cart);
+        if (order.promotion_code) {
+          formData.append("code", order.promotion_code);
+        }
+        formData.append("shipping_address", JSON.stringify(selectedAddress));
+
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/order`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: formData,
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to create order");
+        }
+
+        const orderData = await response.json();
+        successfulOrders.push({
+          orderId: orderData.order_id,
+          amount: orderData.total_amount,
+        });
+        successfulMarketIds.push(order.market_id);
+
+        toast({
+          title: `Order ${i + 1} of ${marketOrders.length} created`,
+          status: "info",
+          duration: 2000,
+          isClosable: true,
+        });
+      } catch (error) {
+        console.error(
+          `Error creating order for market ${order.market_id}:`,
+          error
+        );
+        failedOrders.push(order);
+      }
+    }
+
+    if (failedOrders.length > 0) {
+      toast({
+        title: `${failedOrders.length} orders failed to create`,
+        description: "You can try to resubmit these orders.",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+
+    if (successfulOrders.length > 0) {
+      removeSuccessfulOrdersFromCart(successfulMarketIds);
+      const orderDataString = encodeURIComponent(
+        JSON.stringify(successfulOrders)
+      );
+      router.push(`checkout/payment?orderData=${orderDataString}`);
+    } else {
+      toast({
+        title: "No orders were processed successfully",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
+
+  const removeSuccessfulOrdersFromCart = (successfulMarketIds) => {
+    const currentCart = JSON.parse(localStorage.getItem("cart") || "{}");
+    successfulMarketIds.forEach((marketId) => {
+      delete currentCart[marketId];
+    });
+    localStorage.setItem("cart", JSON.stringify(currentCart));
+  };
+
+  if (isLoading) {
+    return (
+      <Flex justify="center" align="center" h="80vh">
+        <Spinner size="xl" />
+      </Flex>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box mt={10}>
+        <Alert status="error">
+          <AlertIcon />
+          {error.message ||
+            "An error occurred while checking your items out. Please try again later."}
+        </Alert>
+      </Box>
+    );
+  }
 
   return (
     <Container maxW="container.xl" py={10}>
@@ -234,7 +363,7 @@ const CheckoutPage = () => {
             </HStack>
             <HStack justify="space-between">
               <Text>Taxes included (11%)</Text>
-              <Text>Rp{calculateTaxes().toFixed(2)}</Text>
+              <Text>Rp{calculateTaxes(calculateSubtotal()).toFixed(2)}</Text>
             </HStack>
             <HStack justify="space-between">
               <Text>Admin fee</Text>
