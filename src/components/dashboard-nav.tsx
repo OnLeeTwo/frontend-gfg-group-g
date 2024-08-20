@@ -1,8 +1,8 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
 import { Icons } from './icons';
 import { cn } from '../utils/utils';
 import { NavItem } from '../types';
@@ -52,7 +52,7 @@ export function DashboardNav({
                       item.disabled && 'cursor-not-allowed opacity-80'
                     )}
                     onClick={() => {
-                      if (setOpen) setOpen(false);
+                      if (setOpen) setOpen(true);
                     }}
                   >
                     <Icon className={`ml-3 size-5 flex-none`} />

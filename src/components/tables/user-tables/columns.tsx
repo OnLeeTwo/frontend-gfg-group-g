@@ -3,6 +3,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { CellAction } from './cell-action';
 import { User } from '../../../constants/data';
 import { Checkbox } from '../../ui/checkbox';
+import React from 'react';
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -25,7 +26,7 @@ export const columns: ColumnDef<User>[] = [
     enableHiding: false
   },
   {
-    accessorKey: 'name',
+    accessorKey: 'first_name',
     header: 'NAME'
   },
   {
@@ -33,8 +34,8 @@ export const columns: ColumnDef<User>[] = [
     header: 'EMAIL'
   },
   {
-    accessorKey: 'role',
-    header: 'ROLE'
+    accessorKey: 'gender',
+    header: 'GENDER'
   },
   {
     id: 'actions',

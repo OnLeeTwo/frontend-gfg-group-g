@@ -1,5 +1,6 @@
 'use client';
 import * as z from 'zod';
+import axios from 'axios';
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -28,6 +29,7 @@ import {
 import { Checkbox } from '../ui/checkbox';
 import { useToast } from '../ui/use-toast';
 import FileUpload from '../file-upload';
+import React from 'react';
 const ImgSchema = z.object({
   fileName: z.string(),
   name: z.string(),
@@ -121,7 +123,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      //   await axios.delete(`/api/${params.storeId}/products/${params.productId}`);
+        await axios.delete(`/api/${params.storeId}/products/${params.productId}`);
       router.refresh();
       router.push(`/${params.storeId}/products`);
     } catch (error: any) {

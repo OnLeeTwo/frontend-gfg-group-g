@@ -3,6 +3,7 @@ import { Checkbox } from '../../ui/checkbox';
 import { Product } from '../../../constants/data';
 import { ColumnDef } from '@tanstack/react-table';
 import { CellAction } from './cell-action';
+import React from 'react';
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -21,8 +22,8 @@ export const columns: ColumnDef<Product>[] = [
         aria-label="Select row"
       />
     ),
-    enableSorting: false,
-    enableHiding: false
+    enableSorting: true,
+    enableHiding: true
   },
   {
     accessorKey: 'name',

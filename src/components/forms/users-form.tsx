@@ -29,6 +29,7 @@ import {
 // import { Checkbox } from '@/components/ui/checkbox';
 // import FileUpload from "@/components/FileUpload";
 import { useToast } from '../ui/use-toast';
+import React from 'react';
 // import FileUpload from '../file-upload';
 const ImgSchema = z.object({
   fileName: z.string(),

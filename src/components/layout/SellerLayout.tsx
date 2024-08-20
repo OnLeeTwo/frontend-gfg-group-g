@@ -1,6 +1,6 @@
+import React from 'react';
 import Header from './header';
 import Sidebar from './sidebar';
-
 
 export default function DashboardLayout({
   children
@@ -8,12 +8,19 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex">
-      
+    <div className="flex h-screen">
+      {/* Sidebar with a fixed width */}
       <Sidebar />
-      <main className="w-full flex-1 overflow-hidden">
+
+      {/* Main content area */}
+      <main className="flex-1 flex flex-col overflow-y-auto">
+        {/* Header fixed at the top */}
         <Header />
-        {children}
+        
+        {/* Children content */}
+        <div className="flex-1 p-4 overflow-y-auto">
+          {children}
+        </div>
       </main>
     </div>
   );

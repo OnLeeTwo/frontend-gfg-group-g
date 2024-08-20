@@ -2,94 +2,10 @@ import { NavItem } from "../types";
 
 export type User = {
   id: number;
-  name: string;
+  first_name: string;
   email: string;
-  role: string;
-  verified: boolean;
-  status: string;
+  gender: string;
 };
-export const users: User[] = [
-  {
-    id: 1,
-    name: 'Candice Schiner',
-    email: 'Candice Schiner@gmail.com',
-    role: 'Buyer',
-    verified: false,
-    status: 'Active'
-  },
-  {
-    id: 2,
-    name: 'John Doe',
-    email: 'John Doe@gmail.com',
-    role: 'Buyer',
-    verified: true,
-    status: 'Active'
-  },
-  {
-    id: 3,
-    name: 'Alice Johnson',
-    email: 'Alice Johnson@gmail.com',
-    role: 'Seller',
-    verified: true,
-    status: 'Active'
-  },
-  {
-    id: 4,
-    name: 'David Smith',
-    email: 'David Smith@gmail.com',
-    role: 'Seller',
-    verified: false,
-    status: 'Inactive'
-  },
-  {
-    id: 5,
-    name: 'Emma Wilson',
-    email: 'Emma Wilson@gmail.com',
-    role: 'Buyer',
-    verified: true,
-    status: 'Active'
-  },
-  {
-    id: 6,
-    name: 'James Brown',
-    email: 'James Brown@gmail.com',
-    role: 'Seller',
-    verified: false,
-    status: 'Active'
-  },
-  {
-    id: 7,
-    name: 'Laura White',
-    email: 'Laura White@gmail.com',
-    role: 'Seller',
-    verified: true,
-    status: 'Active'
-  },
-  {
-    id: 8,
-    name: 'Michael Lee',
-    email: 'Michael Lee@gmail.com',
-    role: 'Buyer',
-    verified: false,
-    status: 'Active'
-  },
-  {
-    id: 9,
-    name: 'Olivia Green',
-    email: 'Olivia Green@gmail.com',
-    role: 'Buyer',
-    verified: true,
-    status: 'Active'
-  },
-  {
-    id: 10,
-    name: 'Robert Taylor',
-    email: 'Robert Taylor@gmail.com',
-    role: 'Seller',
-    verified: false,
-    status: 'Active'
-  }
-];
 
 export type Product = {
   id: number;

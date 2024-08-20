@@ -8,6 +8,7 @@ import { Product } from '../../../constants/data';
 import { cn } from '../../../utils/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
+import React from 'react';
 
 
 type paramsProps = {
@@ -41,7 +42,7 @@ export default async function page({ searchParams }: paramsProps) {
           />
 
           <Link
-            href={'seller/product/new'}
+            href={'se/product/new'}
             className={cn(buttonVariants({ variant: 'default' }))}
           >
             <Plus className="mr-2 h-4 w-4" /> Add New

@@ -1,4 +1,5 @@
 'use client';
+import React from 'react';
 import { OurFileRouter } from '../app/seller/api/uploadthing/core';
 import { UploadDropzone } from '@uploadthing/react';
 import { Trash } from 'lucide-react';

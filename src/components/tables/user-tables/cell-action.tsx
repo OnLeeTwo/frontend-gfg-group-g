@@ -12,6 +12,7 @@ import { User } from '../../../constants/data';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import React from 'react';
 
 interface CellActionProps {
   data: User;

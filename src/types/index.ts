@@ -1,22 +1,10 @@
 import { Icons } from "../components/icons";
 
 export interface NavItem {
+  disabled: any;
   title: string;
-  href?: string;
-  disabled?: boolean;
-  external?: boolean;
+  href: string;
   icon?: keyof typeof Icons;
   label?: string;
-  description?: string;
-}
-
-
-export interface FooterItem {
-  title: string;
-  items: {
-    title: string;
-    href: string;
-    external?: boolean;
-  }[];
 }
 

@@ -1,5 +1,6 @@
 import ThemeToggle from '../layout/ThemeToggle/theme-toggle';
 import { cn } from '../../utils/utils';
+import React from 'react';
 // import { MobileSidebar } from './mobile-sidebar';
 
 export default function Header() {
