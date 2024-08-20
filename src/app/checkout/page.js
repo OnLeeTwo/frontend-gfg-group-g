@@ -202,7 +202,8 @@ const CheckoutPage = () => {
 
     console.log(marketOrders);
 
-    let successfulOrders = 0;
+    let successfulOrders = [];
+    let successfulMarketIds = [];
     let failedOrders = [];
 
     for (let i = 0; i < marketOrders.length; i++) {
@@ -210,7 +211,6 @@ const CheckoutPage = () => {
       try {
         const formData = new FormData();
         formData.append("cart", order.cart);
-        // Only append the code if it exists
         if (order.promotion_code) {
           formData.append("code", order.promotion_code);
         }
@@ -233,7 +233,11 @@ const CheckoutPage = () => {
         }
 
         const orderData = await response.json();
-        successfulOrders++;
+        successfulOrders.push({
+          orderId: orderData.order_id,
+          amount: orderData.total_amount,
+        });
+        successfulMarketIds.push(order.market_id);
 
         toast({
           title: `Order ${i + 1} of ${marketOrders.length} created`,
@@ -260,16 +264,28 @@ const CheckoutPage = () => {
       });
     }
 
-    if (successfulOrders > 0) {
+    if (successfulOrders.length > 0) {
+      removeSuccessfulOrdersFromCart(successfulMarketIds);
+      const orderDataString = encodeURIComponent(
+        JSON.stringify(successfulOrders)
+      );
+      router.push(`checkout/payment?orderData=${orderDataString}`);
+    } else {
       toast({
-        title: `${successfulOrders} orders created successfully`,
-        status: "success",
+        title: "No orders were processed successfully",
+        status: "error",
         duration: 5000,
         isClosable: true,
       });
-      localStorage.removeItem("cart");
-      router.push("/");
     }
+  };
+
+  const removeSuccessfulOrdersFromCart = (successfulMarketIds) => {
+    const currentCart = JSON.parse(localStorage.getItem("cart") || "{}");
+    successfulMarketIds.forEach((marketId) => {
+      delete currentCart[marketId];
+    });
+    localStorage.setItem("cart", JSON.stringify(currentCart));
   };
 
   if (isLoading) {
@@ -475,7 +491,7 @@ const CheckoutPage = () => {
             </HStack>
             <HStack justify="space-between">
               <Text>Taxes included (11%)</Text>
-              <Text>Rp{calculateTaxes().toFixed(2)}</Text>
+              <Text>Rp{calculateTaxes(calculateSubtotal()).toFixed(2)}</Text>
             </HStack>
             <HStack justify="space-between">
               <Text>Admin fee</Text>

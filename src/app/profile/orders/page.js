@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import {
   Heading,
@@ -11,39 +13,16 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
-import OrderItem from "./OrderItem";
+import OrderItem from "@/components/profile/OrderItem";
+import useOrders from "@/hooks/orderFetch";
 
 const UserOrders = () => {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
-  const fetchOrders = async () => {
-    try {
-      // Replace this with your actual API call
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/order/buyer`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch orders");
-      }
-      const data = await response.json();
-      setOrders(data);
-      setLoading(false);
-    } catch (err) {
-      setError(err.message);
-      setLoading(false);
-    }
-  };
+  const { orders, loading, error } = useOrders();
 
   return (
     <VStack align="stretch" spacing={8}>
       <Heading as="h1" size="xl">
-        Orders History
+        Order History
       </Heading>
 
       <Tabs>
