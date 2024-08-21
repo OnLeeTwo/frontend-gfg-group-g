@@ -26,16 +26,24 @@ export const columns: ColumnDef<Product>[] = [
     enableHiding: true
   },
   {
-    accessorKey: 'name',
+    accessorKey: 'product_name',
     header: 'NAME'
+  },
+  {
+    accessorKey: 'stock',
+    header: 'STOCK'
+  },
+  {
+    accessorKey: 'price',
+    header: 'PRICE'
   },
   {
     accessorKey: 'description',
     header: 'DESCRIPTION'
   },
   {
-    accessorKey: 'price',
-    header: 'PRICE'
+    accessorKey: 'is_premium',
+    header: 'PREMIUM(?)'
   },
   {
     accessorKey: 'category',
