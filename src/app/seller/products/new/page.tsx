@@ -1,14 +1,14 @@
 import withAuth from '@/middleware/withAuth';
-import { MarketForm } from '../../../../components/forms/market-form';
+import { ProductForm } from '../../../../components/forms/products-form';
 import PageContainer from '../../../../components/layout/page-container';
-import { ScrollArea } from '../../../../components/ui/scroll-area';
+
 import React from 'react';
 
-const MarketPageNew = () => {
+const ProductPageNew = () => {
   return (
     <PageContainer scrollable={true}>
       <div className="space-y-4">
-        <MarketForm
+        <ProductForm
           initialData={null}
           key={null}
         />
@@ -17,4 +17,4 @@ const MarketPageNew = () => {
   );
 }
 
-export default withAuth(MarketPageNew, 'seller')
+export default withAuth(ProductPageNew, 'seller')

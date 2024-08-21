@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   Heading,
   VStack,
@@ -13,25 +13,24 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
-import OrderItem from "@/components/profile/OrderItem";
-import useOrders from "@/hooks/orderFetch";
+import OrderItemSeller from "@/components/seller/OrderItemSeller";
+import useOrdersSeller from "@/hooks/orderFetchSeller";
 import withAuth from "@/middleware/withAuth";
 
-const UserOrders = () => {
-  const { orders, loading, error } = useOrders();
+const SellerOrders = () => {
+  const { orders, loading, error } = useOrdersSeller();
 
   return (
     <VStack align="stretch" spacing={8}>
       <Heading as="h1" size="xl">
-        Order History
+        All Orders
       </Heading>
 
       <Tabs>
         <TabList>
           <Tab>All</Tab>
-          <Tab>To Pay</Tab>
           <Tab>To Ship</Tab>
-          <Tab>To Receive</Tab>
+          <Tab>To Delivered</Tab>
           <Tab>Completed</Tab>
           <Tab>Cancelled</Tab>
         </TabList>
@@ -49,7 +48,7 @@ const UserOrders = () => {
       ) : (
         <VStack align="stretch" spacing={4}>
           {orders.map((order) => (
-            <OrderItem key={order.order_id} order={order} />
+            <OrderItemSeller key={order.order_id} order={order} />
           ))}
         </VStack>
       )}
@@ -57,4 +56,4 @@ const UserOrders = () => {
   );
 };
 
-export default withAuth(UserOrders, "buyer");
+export default withAuth(SellerOrders, "seller");

@@ -17,6 +17,7 @@ import {
 } from "@chakra-ui/react";
 import useCartFetch from "@/hooks/cartFetch";
 import CartItem from "@/components/cart/CartItem";
+import withAuth from "@/middleware/withAuth";
 
 const CartPage = () => {
   const router = useRouter();
@@ -277,4 +278,4 @@ const CartPage = () => {
   );
 };
 
-export default CartPage;
+export default withAuth(CartPage, "buyer");

@@ -35,8 +35,6 @@ export const MarketForm: React.FC<MarketFormProps> = ({ initialData }) => {
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [profilePicture, setProfilePicture] = useState<File | null>(null);
-  const [open, setOpen] = useState(false);
 
   const title = initialData ? 'Edit Market' : 'Create Market';
   const description = initialData ? 'Edit an existing market.' : 'Add a new market.';
@@ -84,14 +82,38 @@ export const MarketForm: React.FC<MarketFormProps> = ({ initialData }) => {
 
         if (response.ok) {
           toast({
-            title: "Profile updated successfully",
+            title: "Market updated successfully",
             duration: 3000,
           });
         } else {
-          throw new Error("Failed to update profile");
+          throw new Error("Failed to update market");
         }
       } else {
-        // await axios.post(`/api/markets`, data);
+        const formData = new FormData();
+        if (data.market_name){
+          formData.append("name", data.market_name);
+        }
+        if (data.location){
+          formData.append("location", data.location);
+        }
+        if (profile_picture) {
+          formData.append("images", profile_picture);
+        }
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/markets/`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
+        if (response.ok) {
+          toast({
+            title: "Market created successfully",
+            duration: 3000,
+          });
+        } else {
+          throw new Error("Failed to create market");
+        }
       }
       router.refresh();
       router.push(`/seller/market`);
@@ -158,7 +180,6 @@ export const MarketForm: React.FC<MarketFormProps> = ({ initialData }) => {
                     disabled={loading}
                     onChange={(e) => {
                       field.onChange(e.target.files?.[0]);
-                      setProfilePicture(e.target.files?.[0]);
                     }}
                   />
                 </FormControl>

@@ -14,6 +14,7 @@ import {
   Container,
   useToast,
 } from "@chakra-ui/react";
+import withAuth from "@/middleware/withAuth";
 
 const PaymentPage = () => {
   const router = useRouter();
@@ -189,4 +190,4 @@ const PaymentPage = () => {
   );
 };
 
-export default PaymentPage;
+export default withAuth(PaymentPage, "buyer");

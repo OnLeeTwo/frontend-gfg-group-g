@@ -28,6 +28,7 @@ import {
   Divider,
   useToast,
 } from "@chakra-ui/react";
+import withAuth from "@/middleware/withAuth";
 
 const CheckoutPage = () => {
   const searchParams = useSearchParams();
@@ -515,4 +516,4 @@ const CheckoutPage = () => {
   );
 };
 
-export default CheckoutPage;
+export default withAuth(CheckoutPage, "buyer");

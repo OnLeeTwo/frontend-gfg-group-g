@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 import { useToast } from "@chakra-ui/react";
-import { useAuth } from "../hooks/authContext";
+import { useAuth } from "./authContext";
 
 export const useLogout = () => {
   const router = useRouter();
