@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useLogout } from '../hooks/auth'
+import { useLogout } from '../hooks/logout'
 import { useAuth } from '../hooks/authContext'
 import React from 'react'
 

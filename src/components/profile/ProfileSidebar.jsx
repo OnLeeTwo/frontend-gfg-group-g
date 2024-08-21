@@ -1,6 +1,6 @@
 import React from "react";
 import { VStack, Link, Button } from "@chakra-ui/react";
-import { useLogout } from "@/hooks/auth";
+import { useLogout } from "@/hooks/logout";
 
 const ProfileSidebar = () => {
   const logout = useLogout();
