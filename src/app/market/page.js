@@ -10,29 +10,49 @@ import {
   Alert,
   AlertIcon,
   Select,
+  Menu,
+  MenuButton,
+  Button,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
 import MarketCard from "@/components/MarketCard";
-import { Button } from "@/components/Button";
+import { Button as ButtonSearch } from "@/components/Button";
 import { useState } from "react";
 import { useDataPaginate } from "@/hooks/usePaginate";
 import { LoadingPage } from "@/components/Loading";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 
 export default function Market() {
   const [searchQuery, setSearchQuery] = useState("");
   const [limit, setLimit] = useState(5);
-  const [name, setName] = useState("")
+  const [name, setName] = useState("");
+  const [location, setLocation] = useState("");
+  const [locationQuery, setLocationQuery] = useState("");
+  const PaginateNumber = [5, 10, 25, 50, 100]
+  
+
+  const handleCheck = (value) => {
+    setCheckedItems((prev) => {
+      prev.includes(value)
+        ? prev.filter((item) => item !== value)
+        : [...prev, value];
+    });
+  };
 
   const { nextPage, prevPage, data, currentPage, totalPage, error, isLoading } =
     useDataPaginate(
       `${process.env.NEXT_PUBLIC_API_URL}/markets`,
+      '',
       limit,
-      searchQuery
+      searchQuery,
+      locationQuery
     );
 
   const handleSubmit = () => {
-    setSearchQuery(name)
-    
-  }
+    setSearchQuery(name);
+    setLocationQuery(location);
+  };
   return (
     <Container maxW="container.xl" py={10}>
       <Flex direction={{ base: "column", md: "column" }} gap={3}>
@@ -43,26 +63,33 @@ export default function Market() {
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-            <Button onClick={handleSubmit} CTA="CARI"></Button>
+            {/* <Input
+              placeholder="Search by market name"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            /> */}
+          
+            <ButtonSearch onClick={handleSubmit} CTA="CARI"></ButtonSearch>
           </Stack>
         </Box>
         <Box maxWidth="100%" overflowX="auto" padding={4}>
-           {isLoading ? (
+          {isLoading ? (
             <LoadingPage />
-          ) : error ? (  <Box mt={10} mb={10}>
-            <Alert status="error">
-              <AlertIcon />
-              {error.response.data.message}
-            </Alert>
-          </Box>) :
-          data.length === 0 ? (
+          ) : error ? (
+            <Box mt={10} mb={10}>
+              <Alert status="error">
+                <AlertIcon />
+                {"Market tidak ditemukan"}
+              </Alert>
+            </Box>
+          ) : data.length === 0 ? (
             <Box mt={10} mb={10}>
               <Alert status="warning">
                 <AlertIcon />
                 Market tidak ditemukan
               </Alert>
             </Box>
-          )  : (
+          ) : (
             <Grid templateColumns="repeat(3, 1fr)" gap={3}>
               {data.map((item) => (
                 <div key={item.market_id}>
@@ -75,8 +102,7 @@ export default function Market() {
                 </div>
               ))}
             </Grid>
-          )
-        }
+          )}
         </Box>
         <div className="flex flex-row justify-end items-center gap-12 mt-12">
           <Box p={4}>
@@ -85,19 +111,17 @@ export default function Market() {
               value={limit}
               onChange={(e) => setLimit(e.target.value)}
             >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={25}>25</option>
-              <option value={50}>50</option>
-              <option value={100}>100</option>
+              {PaginateNumber.map((number) => (
+                <option key={number} value={number}>{number}</option>
+              ))}
             </Select>
           </Box>
-          <Button
+          <ButtonSearch
             CTA="Previous"
             onClick={prevPage}
             disabled={currentPage === 1 && true}
           />
-          <Button
+          <ButtonSearch
             CTA="Next"
             onClick={nextPage}
             disabled={currentPage === totalPage && true}

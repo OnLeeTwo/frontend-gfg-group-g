@@ -15,14 +15,33 @@ import {
 } from "@chakra-ui/react";
 import { useParams } from "next/navigation";
 import ProductCard from "@/components/ProductCard";
-import { useState } from "react";
-import { LoadingPage } from "@/components/Loading";
+import { useState, useEffect } from "react";
+import { LoadingPage } from "@/components/Loading"
+import {fetchCategory} from '@/utils/fetchCategory'
+import axios from "axios";
 
 const ProductPage = () => {
   const { id } = useParams()
   const [search, setSearch] = useState("")
   const [name, setName] = useState("")
   const [limit, setLimit] = useState(5)
+  const [options, setOptions] = useState([]);
+  const [category, setCategory] = useState("")
+  const [searchCategory, setSearchCategory] = useState("")
+ 
+  useEffect(() => {
+    async function getOptions() {
+      try {
+        const categories = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/categories`)
+        console.log(categories)
+        setOptions(categories.data.data)
+      } catch (error) {
+        console.error('Error fetching options:', error);
+      }
+    }
+
+    getOptions();
+  }, []);
 
   const {
     nextPage,
@@ -33,11 +52,15 @@ const ProductPage = () => {
     error,
     isLoading
   } = useDataPaginate(
-    `${process.env.NEXT_PUBLIC_API_URL}/products`, limit, search
+    `${process.env.NEXT_PUBLIC_API_URL}/products`, 'product',limit, search, searchCategory
   )
+  
+
+
 
   const handleSubmit = () => { 
     setSearch(name)
+    setSearchCategory(category)
   }
 
   return (
@@ -50,6 +73,12 @@ const ProductPage = () => {
               value={name}
               onChange={(e) => setName(e.target.value)} 
             />
+            <Select value={category} onChange={(e) => setCategory(e.target.value)}>
+              <option value="">All</option> 
+            {options.map((option) => (
+              <option value={option.id}>{option.name}</option>
+            ))}
+            </Select>
             <Button CTA="Cari" onClick={handleSubmit} />
           </Stack>
         </Box>

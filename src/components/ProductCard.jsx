@@ -13,6 +13,7 @@ import {
   TagLabel,
   Tooltip,
 } from "@chakra-ui/react";
+import Link from 'next/link'
 
 export default function ProductCard({
   name,
@@ -25,16 +26,17 @@ export default function ProductCard({
   id,
 }) {
   return (
-    <Card maxW="sm" variant="filled">
+    <Card maxW="sm" variant="filled" maxHeight={900}>
       <CardBody>
         <Image
           src={image}
-          alt="Green double couch with wooden legs"
+          height="200px"
+          alt={`Produk ${name}: ${description}`}
           borderRadius="lg"
         />
         <Stack mt="6" spacing="3">
           <Heading size="md">{name}</Heading>
-          <Heading as="h4" size="md">
+          <Heading as="h4" size="sm">
             {market}
           </Heading>
           <Text>
@@ -61,7 +63,9 @@ export default function ProductCard({
       <CardFooter>
         <ButtonGroup spacing="2">
           <Button variant="solid" colorScheme="blue">
-            View Product
+          <Link href={`/product/${id}`}>
+                        View product
+                       </Link>
           </Button>
           <Button variant="ghost" colorScheme="blue">
             add to cart
