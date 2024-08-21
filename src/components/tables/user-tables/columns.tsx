@@ -26,16 +26,16 @@ export const columns: ColumnDef<User>[] = [
     enableHiding: false
   },
   {
-    accessorKey: 'first_name',
-    header: 'NAME'
+    accessorKey: 'market_id',
+    header: 'ID'
   },
   {
-    accessorKey: 'email',
-    header: 'EMAIL'
+    accessorKey: 'market_name',
+    header: 'MARKET NAME'
   },
   {
-    accessorKey: 'gender',
-    header: 'GENDER'
+    accessorKey: 'location',
+    header: 'LOCATION'
   },
   {
     id: 'actions',
