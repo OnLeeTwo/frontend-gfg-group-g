@@ -4,12 +4,10 @@ import { UserTable } from '@/components/tables/user-tables/client';
 import { buttonVariants } from '../../../components/ui/button';
 import { Heading } from '../../../components/ui/heading';
 import { Separator } from '../../../components/ui/separator';
-import { User } from '../../../constants/data';
 import { cn } from '../../../utils/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
-
 
 type paramsProps = {
   searchParams: {
@@ -19,26 +17,30 @@ type paramsProps = {
 
 export default async function page({ searchParams }: paramsProps) {
   const page = Number(searchParams.page) || 1;
-  const pageLimit = Number(searchParams.limit) || 10;
-  const email = searchParams.search || null;
-  const offset = (page - 1) * pageLimit;
-
+  const perPage = Number(searchParams.limit) || 10;
+  const name = searchParams.search || '';
+  
   const res = await fetch(
-    `https://api.slingacademy.com/v1/sample-data/users?offset=${offset}&limit=${pageLimit}` +
-      (email ? `&search=${email}` : '')
+    `${process.env.NEXT_PUBLIC_API_URL}/markets?page=${page}&per_page=${perPage}` +
+    (name ? `&name=${name}` : '')
   );
-  const fetchProuct = await res.json();
-  const totalUsers = fetchProuct.limit; //1000
-  const pageCount = Math.ceil(totalUsers / pageLimit);
-  const users: User[] = fetchProuct.users;
+  const fetchMarket = await res.json();
+  
+  if (!fetchMarket.success) {
+    return <div>Error fetching market data: {fetchMarket.message}</div>;
+  }
+
+  const totalMarkets = fetchMarket.total_items;
+  const pageCount = fetchMarket.total_pages;
+  const markets = fetchMarket.data;
+
   return (
     <PageContainer>
       <div className="space-y-4">
-
         <div className="flex items-start justify-between">
           <Heading
-            title={`Users (${totalUsers})`}
-            description="Manage Users (Server side table functionalities.)"
+            title={`Market (${totalMarkets})`}
+            description="Manage all markets that you have"
           />
 
           <Link
@@ -51,11 +53,11 @@ export default async function page({ searchParams }: paramsProps) {
         <Separator />
 
         <UserTable
-          searchKey="email"
+          searchKey="market_name"
           pageNo={page}
           columns={columns}
-          totalUsers={totalUsers}
-          data={users}
+          totalUsers={totalMarkets}
+          data={markets}
           pageCount={pageCount}
         />
       </div>

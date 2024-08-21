@@ -1,10 +1,9 @@
 import { NavItem } from "../types";
 
 export type User = {
-  id: number;
-  first_name: string;
-  email: string;
-  gender: string;
+  market_id: string;
+  market_name: string;
+  location: string;
 };
 
 export type Product = {
@@ -15,30 +14,29 @@ export type Product = {
   description: string;
 };
 
-
 export const navItems: NavItem[] = [
   {
-    title: 'Dashboard',
-    href: 'seller/dashboard',
-    icon: 'dashboard',
-    label: 'Dashboard'
+    title: "Dashboard",
+    href: "/seller/dashboard",
+    icon: "dashboard",
+    label: "Dashboard",
   },
   {
-    title: 'User',
-    href: 'seller/users',
-    icon: 'user',
-    label: 'user'
+    title: "Market",
+    href: "/seller/market",
+    icon: "user",
+    label: "user",
   },
   {
-    title: 'Product',
-    href: 'seller/products',
-    icon: 'products',
-    label: 'product'
+    title: "Product",
+    href: "/seller/products",
+    icon: "products",
+    label: "product",
   },
   {
-    title: 'Promotions',
-    href: 'seller/promotions',
-    icon: 'promotions',
-    label: 'kanban'
+    title: "Promotions",
+    href: "/seller/promotions",
+    icon: "promotions",
+    label: "kanban",
   },
 ];
