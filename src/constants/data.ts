@@ -7,11 +7,13 @@ export type User = {
 };
 
 export type Product = {
-  id: number;
-  name: string;
+  id: string;
+  product_name: string;
+  stock: number;
   price: number;
-  email: string;
   description: string;
+  category: string;
+  is_premium: string;
 };
 
 export const navItems: NavItem[] = [
