@@ -8,6 +8,7 @@ import { cn } from '../../../utils/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
+import withAuth from '@/middleware/withAuth';
 
 type paramsProps = {
   searchParams: {
@@ -15,7 +16,7 @@ type paramsProps = {
   };
 };
 
-export default async function page({ searchParams }: paramsProps) {
+const MarketPage = async({ searchParams }: paramsProps) => {
   const page = Number(searchParams.page) || 1;
   const perPage = Number(searchParams.limit) || 10;
   const name = searchParams.search || '';
@@ -64,3 +65,5 @@ export default async function page({ searchParams }: paramsProps) {
     </PageContainer>
   );
 }
+
+export default withAuth(MarketPage, 'seller')

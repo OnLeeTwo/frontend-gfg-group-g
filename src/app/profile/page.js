@@ -1,5 +1,10 @@
+"use client";
+
+import withAuth from "@/middleware/withAuth";
 import { redirect } from "next/navigation";
 
-export default function ProfilePage() {
+const ProfilePage = () => {
   redirect("/profile/account");
-}
+};
+
+export default withAuth(ProfilePage, "buyer");

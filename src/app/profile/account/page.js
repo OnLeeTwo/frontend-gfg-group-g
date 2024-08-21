@@ -27,7 +27,7 @@ import {
   FormLabel,
   Input,
 } from "@chakra-ui/react";
-
+import withAuth from "@/middleware/withAuth";
 const UserProfile = () => {
   const toast = useToast();
   const [token, setToken] = useState(null);
@@ -340,4 +340,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default withAuth(UserProfile, "buyer");

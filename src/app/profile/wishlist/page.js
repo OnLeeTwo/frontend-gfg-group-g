@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState, useCallback } from "react";
 import ProductWishlistCard from "@/components/profile/ProductWishlistCard";
+import withAuth from "@/middleware/withAuth";
 
 const UserWishlist = () => {
   const toast = useToast();
@@ -110,4 +111,4 @@ const UserWishlist = () => {
   );
 };
 
-export default UserWishlist;
+export default withAuth(UserWishlist, "buyer");

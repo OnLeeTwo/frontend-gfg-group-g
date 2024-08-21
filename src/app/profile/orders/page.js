@@ -15,6 +15,7 @@ import {
 import { SearchIcon } from "@chakra-ui/icons";
 import OrderItem from "@/components/profile/OrderItem";
 import useOrders from "@/hooks/orderFetch";
+import withAuth from "@/middleware/withAuth";
 
 const UserOrders = () => {
   const { orders, loading, error } = useOrders();
@@ -56,4 +57,4 @@ const UserOrders = () => {
   );
 };
 
-export default UserOrders;
+export default withAuth(UserOrders, "buyer");

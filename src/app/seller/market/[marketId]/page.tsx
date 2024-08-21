@@ -4,6 +4,7 @@ import { MarketForm } from '../../../../components/forms/market-form';
 import PageContainer from '../../../../components/layout/page-container';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import withAuth from '@/middleware/withAuth';
 
 interface Market {
   market_id: string;
@@ -13,7 +14,7 @@ interface Market {
 
 }
 
-export default function Page() {
+const MarketPageForm = () => {
   const [initialData, setInitialData] = useState<Market | null>(null);
   const [loading, setLoading] = useState(true);
   const params = useParams();
@@ -56,3 +57,6 @@ export default function Page() {
     </PageContainer>
   );
 }
+
+
+export default withAuth(MarketPageForm, 'seller')
