@@ -487,12 +487,12 @@ const CheckoutPage = () => {
               <Text>Rp{calculateSubtotal().toFixed(2)}</Text>
             </HStack>
             <HStack justify="space-between">
-              <Text>Shipping</Text>
-              <Text>Rp{calculateShipping().toFixed(2)}</Text>
-            </HStack>
-            <HStack justify="space-between">
               <Text>Taxes included (11%)</Text>
               <Text>Rp{calculateTaxes(calculateSubtotal()).toFixed(2)}</Text>
+            </HStack>
+            <HStack justify="space-between">
+              <Text>Shipping</Text>
+              <Text>Rp{calculateShipping().toFixed(2)}</Text>
             </HStack>
             <HStack justify="space-between">
               <Text>Admin fee</Text>
