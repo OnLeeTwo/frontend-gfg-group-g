@@ -3,11 +3,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import useProductFetch from "@/hooks/productFetch";
 import { AddIcon, MinusIcon, StarIcon } from "@chakra-ui/icons";
 import {
   Box,
+  Badge,
   Flex,
   Heading,
   Text,
@@ -25,6 +26,7 @@ import {
 
 const ProductPage = () => {
   const { id } = useParams();
+  const router = useRouter();
   const toast = useToast();
   const [token, setToken] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -207,8 +209,28 @@ const ProductPage = () => {
   };
 
   const handleBuyNow = (qty) => {
-    handleAddToCart(qty);
-    router.push("/checkout");
+    if (!token) {
+      toast({
+        title: "Error",
+        description: "Please login to proceed with purchase",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    const checkoutData = {
+      [`${product.market_id}`]: [
+        {
+          product_id: product.id,
+          quantity: qty,
+        },
+      ],
+    };
+
+    const encodedData = encodeURIComponent(JSON.stringify(checkoutData));
+    router.push(`/checkout?cart=${encodedData}`);
   };
 
   const incrementQuantity = () => {
@@ -234,9 +256,16 @@ const ProductPage = () => {
         </Box>
 
         <VStack flex={1} align="start" spacing={4}>
-          <Heading as="h1" size="xl">
-            {product.product_name}
-          </Heading>
+          <Flex alignItems="center">
+            <Heading as="h1" size="xl">
+              {product.product_name}
+            </Heading>
+            {product.is_premium === 1 && (
+              <Badge ml={2} colorScheme="green">
+                Premium
+              </Badge>
+            )}
+          </Flex>
           <Text fontSize="md">{product.category}</Text>
           <Heading as="h2" size="lg">
             Rp{price.toLocaleString()}
@@ -277,7 +306,11 @@ const ProductPage = () => {
             >
               Add to Cart
             </Button>
-            <Button colorScheme="blue" flex={1}>
+            <Button
+              colorScheme="blue"
+              flex={1}
+              onClick={() => handleBuyNow(quantity)}
+            >
               Buy Now
             </Button>
             <IconButton
