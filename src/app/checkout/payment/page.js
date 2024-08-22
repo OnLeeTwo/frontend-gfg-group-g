@@ -135,6 +135,9 @@ const PaymentPage = () => {
   return (
     <Container maxW="container.md" py={10}>
       <VStack spacing={6} align="stretch">
+        <Heading as="h1" size="xl" textAlign="center" color={"red.500"}>
+          For development purpose only, do not submit the real payment data!
+        </Heading>
         <Heading as="h1" size="xl" textAlign="center">
           Payment Details
         </Heading>
