@@ -48,7 +48,7 @@ const SellerOrders = () => {
       ) : (
         <VStack align="stretch" spacing={4}>
           {orders.map((order) => (
-            <OrderItemSeller key={order.order_id} order={order} />
+            <OrderItemSeller key={order.order_id} initialOrder={order} />
           ))}
         </VStack>
       )}
