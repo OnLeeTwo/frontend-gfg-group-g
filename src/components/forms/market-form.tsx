@@ -1,6 +1,6 @@
-'use client';
+'use client'
+
 import * as z from 'zod';
-import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useParams, useRouter } from 'next/navigation';
@@ -17,7 +17,7 @@ import {
 import { Separator } from '../ui/separator';
 import { Heading } from '../ui/heading';
 import { useToast } from '../ui/use-toast';
-import React from 'react';
+import React, { useEffect, useState} from 'react';
 
 const formSchema = z.object({
   market_name: z.string().min(3, { message: 'Market name must be at least 3 characters' }),
@@ -29,19 +29,28 @@ type MarketFormValues = z.infer<typeof formSchema>;
 
 interface MarketFormProps {
   initialData: any | null;
+  sellerId: string | null
 }
 
-export const MarketForm: React.FC<MarketFormProps> = ({ initialData }) => {
+export const MarketForm: React.FC<MarketFormProps> = ({ initialData , sellerId}) => {
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
+
 
   const title = initialData ? 'Edit Market' : 'Create Market';
   const description = initialData ? 'Edit an existing market.' : 'Add a new market.';
   const toastMessage = initialData ? 'Market updated.' : 'Market created.';
   const action = initialData ? 'Save changes' : 'Create';
 
-  const token =  localStorage.getItem("access_token")
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem("access_token");
+      setToken(token);
+    }
+  }, []);
 
   const defaultValues = initialData || {
     market_id: '',
@@ -99,7 +108,8 @@ export const MarketForm: React.FC<MarketFormProps> = ({ initialData }) => {
         if (profile_picture) {
           formData.append("images", profile_picture);
         }
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/markets/`, {
+        formData.append("seller_id", sellerId);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/markets`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,

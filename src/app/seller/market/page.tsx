@@ -1,3 +1,5 @@
+'use client'
+
 import PageContainer from '../../../components/layout/page-container';
 import { columns } from '@/components/tables/user-tables/columns';
 import { UserTable } from '@/components/tables/user-tables/client';
@@ -7,8 +9,10 @@ import { Separator } from '../../../components/ui/separator';
 import { cn } from '../../../utils/utils';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import withAuth from '@/middleware/withAuth';
+
+
 
 type paramsProps = {
   searchParams: {
@@ -16,24 +20,34 @@ type paramsProps = {
   };
 };
 
-const MarketPage = async({ searchParams }: paramsProps) => {
-  const page = Number(searchParams.page) || 1;
-  const perPage = Number(searchParams.limit) || 10;
-  const name = searchParams.search || '';
-  
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/markets?page=${page}&per_page=${perPage}` +
-    (name ? `&name=${name}` : '')
-  );
-  const fetchMarket = await res.json();
-  
-  if (!fetchMarket.success) {
-    return <div>Error fetching market data: {fetchMarket.message}</div>;
-  }
+const MarketPage = ({ searchParams }: paramsProps) => {
+  const [markets, setMarkets] = useState([]);
+  const [totalMarkets, setTotalMarkets] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
 
-  const totalMarkets = fetchMarket.total_items;
-  const pageCount = fetchMarket.total_pages;
-  const markets = fetchMarket.data;
+  useEffect(() => {
+    const fetchMarketData = async () => {
+      const page = Number(searchParams.page) || 1;
+      const perPage = Number(searchParams.limit) || 10;
+      const name = searchParams.search || '';
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/markets?page=${page}&per_page=${perPage}` +
+        (name ? `&name=${name}` : '')
+      );
+      const fetchMarket = await res.json();
+
+      if (fetchMarket.success) {
+        setMarkets(fetchMarket.data);
+        setTotalMarkets(fetchMarket.total_items);
+        setPageCount(fetchMarket.total_pages);
+      } else {
+        console.error('Error fetching market data:', fetchMarket.message);
+      }
+    };
+
+    fetchMarketData();
+  }, [searchParams]);
 
   return (
     <PageContainer>
@@ -45,7 +59,7 @@ const MarketPage = async({ searchParams }: paramsProps) => {
           />
 
           <Link
-            href={'../seller/users/new'}
+            href={'../seller/market/new'}
             className={cn(buttonVariants({ variant: 'default' }))}
           >
             <Plus className="mr-2 h-4 w-4" /> Add New
@@ -55,7 +69,7 @@ const MarketPage = async({ searchParams }: paramsProps) => {
 
         <UserTable
           searchKey="market_name"
-          pageNo={page}
+          pageNo={Number(searchParams.page) || 1}
           columns={columns}
           totalUsers={totalMarkets}
           data={markets}
@@ -66,4 +80,4 @@ const MarketPage = async({ searchParams }: paramsProps) => {
   );
 }
 
-export default withAuth(MarketPage, 'seller')
+export default withAuth(MarketPage, 'seller');
