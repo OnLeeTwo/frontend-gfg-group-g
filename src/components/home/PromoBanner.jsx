@@ -16,7 +16,7 @@ export default function PromoBanner() {
             Summer Sale!
           </Heading>
           <Text fontSize="lg" color="green.600">
-            Get 10% off on all eco-friendly products, use code "SEPULUH".
+            Get 10% off on all eco-friendly products, use code &quot;SEPULUH&quot;.
           </Text>
         </Box>
         <Button

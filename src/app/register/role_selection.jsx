@@ -6,7 +6,7 @@ const RoleSelection = ({ onSelect }) => {
     <Container maxW="container.sm">
       <VStack spacing={8} mt={16}>
         <Heading as="h1" size="xl" textAlign="center">
-          What's your purpose to use this website?
+          What&apos;s your purpose to use this website?
         </Heading>
         <Box display="flex" justifyContent="center" gap={8}>
           <Button

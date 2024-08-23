@@ -36,16 +36,16 @@ export default function About() {
 
             <Text fontSize="lg" color={textColor}>
               Welcome to SucoMart, your gateway to discovering sustainable and
-              locally crafted products. If you're searching for something new
-              that makes a difference, you've arrived at the right place. Our
-              marketplace celebrates innovation while championing local artisans
-              and eco-friendly brands. Each item in our curated collection is
-              not only designed with sustainability in mind but also supports
-              small businesses that are committed to ethical and green
-              practices. Whether it's unique, locally sourced goods or the
-              latest in sustainable living, we bring you products that are both
-              fresh and impactful. Explore a new way to shop—one that values
-              creativity, community, and the planet.
+              locally crafted products. If you&aposre searching for something
+              new that makes a difference, you&apos;ve arrived at the right
+              place. Our marketplace celebrates innovation while championing
+              local artisans and eco-friendly brands. Each item in our curated
+              collection is not only designed with sustainability in mind but
+              also supports small businesses that are committed to ethical and
+              green practices. Whether it&apos;s unique, locally sourced goods
+              or the latest in sustainable living, we bring you products that
+              are both fresh and impactful. Explore a new way to shop—one that
+              values creativity, community, and the planet.
             </Text>
 
             <Box>
@@ -53,7 +53,7 @@ export default function About() {
                 Our Commitment
               </Heading>
               <Text color={textColor}>
-                At SucoMart, we're passionate about making sustainable and
+                At SucoMart, we&apos;re passionate about making sustainable and
                 eco-friendly products accessible to everyone. Founded in 2024,
                 our mission is to create a marketplace where conscious consumers
                 can find high-quality, environmentally responsible goods that
@@ -75,8 +75,8 @@ export default function About() {
                   sustainability standards
                 </ListItem>
                 <ListItem>
-                  Transparent information about each product's environmental
-                  impact and origins
+                  Transparent information about each product&apos;s
+                  environmental impact and origins
                 </ListItem>
                 <ListItem>
                   Educational resources to help our customers make informed
@@ -90,9 +90,9 @@ export default function About() {
                 Our Impact
               </Heading>
               <Text color={textColor} mb={4}>
-                By choosing SucoMart, you're not just shopping – you're
-                contributing to a larger movement. We're proud to report that
-                our efforts have:
+                By choosing SucoMart, you&apos;re not just shopping –
+                you&apos;re contributing to a larger movement. We&apos;re proud
+                to report that our efforts have:
               </Text>
               <UnorderedList spacing={2} pl={5} color={textColor}>
                 <ListItem>Reduced plastic waste by 50 tons annually</ListItem>

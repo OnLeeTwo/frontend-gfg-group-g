@@ -1,11 +1,11 @@
 'use client'
 
-import { ProductForm } from '../../../../components/forms/products-form';
+import { PromotionForm } from '@/components/forms/promotion-form';
 import { ScrollArea } from '../../../../components/ui/scroll-area';
 import React, {useState, useEffect} from 'react';
 import { useParams } from 'next/navigation';
-import exp from 'constants';
 import withAuth from '@/middleware/withAuth';
+
 
 interface Promotion {
   promotion_id: string;
@@ -57,7 +57,8 @@ if (loading) {
       <div className="flex-1 space-y-4 p-8">
         <PromotionForm
           initialData={initialData}
-          key={initialData?.id || 'new' }
+          key={initialData?.promotion_id || 'new' }
+          markets={null}
         />
       </div>
     </ScrollArea>
