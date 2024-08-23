@@ -7,16 +7,27 @@ import {
   VStack,
   Heading,
   Text,
-  Checkbox,
   Input,
+  Button,
   Select,
   SimpleGrid,
+  Card,
+  CardBody,
   Image,
+  Stack,
   Badge,
-  Button,
+  Checkbox,
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  useDisclosure,
   Spinner,
   Alert,
   AlertIcon,
+  Link,
 } from "@chakra-ui/react";
 
 const ProductPage = () => {
@@ -30,6 +41,7 @@ const ProductPage = () => {
     priceMax: "",
   });
   const [sortOption, setSortOption] = useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     fetchProducts();
@@ -39,7 +51,7 @@ const ProductPage = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/products`
+        `${process.env.NEXT_PUBLIC_API_URL}/products?name=&page=1&per_page=20`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch products");
@@ -64,11 +76,6 @@ const ProductPage = () => {
         ? prev.category.filter((c) => c !== category)
         : [...prev.category, category],
     }));
-  };
-
-  const handleLocationFilter = (location) => {
-    // Placeholder for location filter (not in your current data model)
-    console.log("Filter by location:", location);
   };
 
   const handlePriceFilter = () => {
@@ -113,113 +120,181 @@ const ProductPage = () => {
     );
   }
 
-  return (
-    <Flex>
-      {/* Sidebar */}
-      <Box width="250px" p={4} borderRight="1px" borderColor="gray.200">
-        <VStack align="stretch" spacing={6}>
-          <Box>
-            <Heading size="md" mb={2}>
-              Filter
-            </Heading>
-          </Box>
+  const SidebarContent = () => (
+    <VStack align="stretch" spacing={6}>
+      <Box>
+        <Heading size="md" mb={2}>
+          Filter
+        </Heading>
+      </Box>
 
-          <Box>
-            <Heading size="sm" mb={2}>
-              Category
-            </Heading>
-            <VStack align="stretch">
-              {/* Dynamically generate checkboxes based on unique categories */}
-              {[...new Set(products.map((p) => p.category))].map((category) => (
-                <Checkbox
-                  key={category}
-                  onChange={() => handleCategoryFilter(category)}
-                  isChecked={filters.category.includes(category)}
-                >
-                  {category}
-                </Checkbox>
-
-              ))}
-            </VStack>
-          </Box>
-
-          <Box>
-            <Heading size="sm" mb={2}>
-              Price
-            </Heading>
-            <Flex>
-              <Input
-                placeholder="Min"
-                type="number"
-                mr={2}
-                value={filters.priceMin}
-                onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, priceMin: e.target.value }))
-                }
-              />
-              <Input
-                placeholder="Max"
-                type="number"
-                value={filters.priceMax}
-                onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, priceMax: e.target.value }))
-                }
-              />
-            </Flex>
-            <Button mt={2} onClick={handlePriceFilter}>
-              Apply
-            </Button>
-          </Box>
+      <Box>
+        <Heading size="sm" mb={2}>
+          Category
+        </Heading>
+        <VStack align="stretch">
+          {[...new Set(products.map((p) => p.category))].map((category) => (
+            <Checkbox
+              key={category}
+              onChange={() => handleCategoryFilter(category)}
+              isChecked={filters.category.includes(category)}
+            >
+              {category}
+            </Checkbox>
+          ))}
         </VStack>
       </Box>
 
-      {/* Main Content */}
-      <Box flex={1} p={4}>
-        <Flex justify="space-between" mb={4}>
-          <Text>Showing {filteredProducts.length} products</Text>
-          <Select
-            placeholder="Sort by"
-            onChange={(e) => handleSort(e.target.value)}
-            value={sortOption}
-          >
-            <option value="relevance">Most Relevant</option>
-            <option value="price-asc">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
-          </Select>
+      <Box>
+        <Heading size="sm" mb={2}>
+          Price
+        </Heading>
+        <Flex>
+          <Input
+            placeholder="Min"
+            type="number"
+            mr={2}
+            value={filters.priceMin}
+            onChange={(e) =>
+              setFilters((prev) => ({ ...prev, priceMin: e.target.value }))
+            }
+          />
+          <Input
+            placeholder="Max"
+            type="number"
+            value={filters.priceMax}
+            onChange={(e) =>
+              setFilters((prev) => ({ ...prev, priceMax: e.target.value }))
+            }
+          />
         </Flex>
-
-        <SimpleGrid columns={5} spacing={4}>
-          {filteredProducts.map((product) => (
-            <Box
-              key={product.id}
-              borderWidth="1px"
-              borderRadius="lg"
-              overflow="hidden"
-            >
-              <Image src={product.images} alt={product.product_name} />
-              <Box p={3}>
-                <Heading size="sm" mb={2}>
-                  {product.product_name}
-                </Heading>
-                <Text fontWeight="bold" mb={2}>
-                  Rp{product.price.toLocaleString()}
-                </Text>
-                <Flex align="center" mb={2}>
-                  <Badge
-                    colorScheme={product.is_premium ? "yellow" : "gray"}
-                    mr={1}
-                  >
-                    {product.is_premium ? "Premium" : "Standard"}
-                  </Badge>
-                  <Text fontSize="sm">Stock: {product.stock}</Text>
-                </Flex>
-                <Text fontSize="sm">{product.category}</Text>
-              </Box>
-            </Box>
-          ))}
-        </SimpleGrid>
+        <Button mt={2} onClick={handlePriceFilter}>
+          Apply
+        </Button>
       </Box>
-    </Flex>
+    </VStack>
+  );
+
+  return (
+    <Box>
+      <Flex direction={{ base: "column", md: "row" }}>
+        {/* Sidebar for medium screens and up */}
+        <Box
+          display={{ base: "none", md: "block" }}
+          width={{ md: "250px" }}
+          p={4}
+          borderRight="1px"
+          borderColor="gray.200"
+        >
+          <SidebarContent />
+        </Box>
+
+        {/* Main Content */}
+        <Box flex={1} p={4}>
+          <Flex
+            direction={{ base: "column", sm: "row" }}
+            justify="space-between"
+            align="center"
+            mb={4}
+          >
+            <Text mb={{ base: 2, sm: 0 }}>
+              Showing {filteredProducts.length} products
+            </Text>
+            <Flex align="center">
+              {/* Filter button for small screens */}
+              <Button
+                display={{ base: "block", md: "none" }}
+                onClick={onOpen}
+                mr={2}
+              >
+                Filters
+              </Button>
+              <Select
+                placeholder="Sort by"
+                onChange={(e) => handleSort(e.target.value)}
+                value={sortOption}
+              >
+                <option value="relevance">Most Relevant</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+              </Select>
+            </Flex>
+          </Flex>
+
+          <SimpleGrid
+            columns={{ base: 1, sm: 2, md: 3, lg: 4 }}
+            spacing={6}
+            width="full"
+          >
+            {filteredProducts.map((product) => (
+              <Link
+                key={product.id}
+                href={`/product/${product.id}`}
+                passHref
+                style={{ textDecoration: "none" }}
+              >
+                <Card
+                  height="100%"
+                  maxW="sm"
+                  borderWidth="1px"
+                  borderRadius="lg"
+                  overflow="hidden"
+                  cursor="pointer"
+                  _hover={{ boxShadow: "lg" }}
+                  display="flex"
+                  flexDirection="column"
+                >
+                  <Box height="200px" overflow="hidden">
+                    <Image
+                      src={product.images}
+                      alt={product.product_name}
+                      objectFit="cover"
+                      width="100%"
+                      height="100%"
+                    />
+                  </Box>
+                  <CardBody flex="1" display="flex" flexDirection="column">
+                    <Stack spacing="3" flex="1">
+                      <Heading size="sm" noOfLines={2}>
+                        {product.product_name}
+                      </Heading>
+                      <Text fontWeight="bold">
+                        Rp{product.price.toLocaleString()}
+                      </Text>
+                      <Flex align="center" mt="auto">
+                        <Badge
+                          colorScheme={product.is_premium ? "yellow" : "gray"}
+                          mr={1}
+                        >
+                          {product.is_premium ? "Premium" : "Standard"}
+                        </Badge>
+                        <Text fontSize="sm">Stock: {product.stock}</Text>
+                      </Flex>
+                      <Text fontSize="sm" noOfLines={1}>
+                        {product.category}
+                      </Text>
+                    </Stack>
+                  </CardBody>
+                </Card>
+              </Link>
+            ))}
+          </SimpleGrid>
+        </Box>
+      </Flex>
+
+      {/* Drawer for filters on small screens */}
+      <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
+        <DrawerOverlay>
+          <DrawerContent>
+            <DrawerCloseButton />
+            <DrawerHeader>Filters</DrawerHeader>
+            <DrawerBody>
+              <SidebarContent />
+            </DrawerBody>
+          </DrawerContent>
+        </DrawerOverlay>
+      </Drawer>
+    </Box>
   );
 };
 
