@@ -58,15 +58,15 @@ const Footer = () => {
                   Follow Us
                 </Heading>
                 <HStack spacing={2} mb={4} justify="center">
-                  <Image src="icons/facebook-icon.svg" alt="Facebook" boxSize="30px" />
-                  <Image src="icons/x-icon.svg" alt="XTwitter" boxSize="30px" />
-                  <Image src="icons/youtube-icon.svg" alt="Youtube" boxSize="30px" />
-                  <Image src="icons/instagram-icon.svg" alt="Instagram" boxSize="30px" />
+                  <Image src="../icons/facebook-icon.svg" alt="Facebook" boxSize="30px" />
+                  <Image src="../icons/x-icon.svg" alt="XTwitter" boxSize="30px" />
+                  <Image src="../icons/youtube-icon.svg" alt="Youtube" boxSize="30px" />
+                  <Image src="../icons/instagram-icon.svg" alt="Instagram" boxSize="30px" />
                 </HStack>
               </Box>
               <HStack spacing={2} align="center">
-                <Image src="badge/google-play.png" alt="Get it on Google Play" h="40px" />
-                <Image src="badge/app-store.png" alt="Download on the App Store" h="40px" />
+                <Image src="../badge/google-play.png" alt="Get it on Google Play" h="40px" />
+                <Image src="../badge/app-store.png" alt="Download on the App Store" h="40px" />
               </HStack>
             </Flex>
           </GridItem>
