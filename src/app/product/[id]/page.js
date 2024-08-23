@@ -5,7 +5,7 @@ import axios from "axios";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import useProductFetch from "@/hooks/productFetch";
-import { AddIcon, MinusIcon, StarIcon } from "@chakra-ui/icons";
+import { StarIcon, MinusIcon, AddIcon } from "@chakra-ui/icons";
 import {
   Box,
   Badge,
@@ -13,7 +13,7 @@ import {
   Heading,
   Text,
   Button,
-  Stack,
+  Divider,
   Spinner,
   Alert,
   AlertIcon,
@@ -22,6 +22,7 @@ import {
   HStack,
   Container,
   IconButton,
+  useColorModeValue,
 } from "@chakra-ui/react";
 
 const ProductPage = () => {
@@ -31,6 +32,9 @@ const ProductPage = () => {
   const [token, setToken] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [isInWishlist, setIsInWishlist] = useState(false);
+
+  const bgColor = useColorModeValue("gray.50", "gray.900");
+  const textColor = useColorModeValue("gray.800", "gray.100");
 
   const { product, error, isLoading } = useProductFetch(id);
 
@@ -91,7 +95,6 @@ const ProductPage = () => {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-
       }
       setIsInWishlist(!isInWishlist);
       toast({
@@ -244,97 +247,121 @@ const ProductPage = () => {
   };
 
   return (
-    <Container maxW="container.xl" py={10}>
-      <Flex direction={{ base: "column", md: "row" }} gap={8}>
-        <Box flex={1}>
-          <Image
-            src={imageUrl}
-            alt="Product Image"
-            width={500}
-            height={500}
-            layout="responsive"
-            objectFit="cover"
-          />
-        </Box>
-
-        <VStack flex={1} align="start" spacing={4}>
-          <Flex alignItems="center">
-            <Heading as="h1" size="xl">
-              {product.product_name}
-            </Heading>
-            {product.is_premium === 1 && (
-              <Badge ml={2} colorScheme="green">
-                Premium
-              </Badge>
-            )}
-          </Flex>
-          <Text fontSize="md">{product.category}</Text>
-          <Heading as="h2" size="lg">
-            Rp{price.toLocaleString()}
-          </Heading>
-          <Text fontSize="md" fontWeight="bold">
-            {product.stock} in stock
-          </Text>
-
-          <HStack>
-            <Button
-              onClick={decrementQuantity}
-              isDisabled={quantity === 1}
-              colorScheme="blue"
-              borderRadius="full"
-              size="sm"
-            >
-              -
-            </Button>
-            <Text mx={4} fontSize="xl" fontWeight="bold">
-              {quantity}
-            </Text>
-            <Button
-              onClick={incrementQuantity}
-              isDisabled={quantity === product.stock}
-              colorScheme="blue"
-              borderRadius="full"
-              size="sm"
-            >
-              +
-            </Button>
-          </HStack>
-
-          <Stack direction="row" spacing={4} width="full">
-            <Button
-              colorScheme="orange"
-              flex={1}
-              onClick={() => handleAddToCart(quantity)}
-            >
-              Add to Cart
-            </Button>
-            <Button
-              colorScheme="blue"
-              flex={1}
-              onClick={() => handleBuyNow(quantity)}
-            >
-              Buy Now
-            </Button>
-            <IconButton
-              isRound={true}
-              onClick={handleWishlistToggle}
-              colorScheme={isInWishlist ? "red" : "gray"}
-              aria-label={
-                isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"
-              }
-              size="lg"
-              icon={<StarIcon />}
-              variant={isInWishlist ? "solid" : "outline"}
+    <Box bg={bgColor} minH="100vh" py={[8, 12, 16]}>
+      <Container maxW="container.xl">
+        <Flex direction={{ base: "column", lg: "row" }} gap={[8, 12, 16]}>
+          <Box flex={1} position="relative" minH={["300px", "400px", "500px"]}>
+            <Image
+              src={imageUrl}
+              alt={product.product_name}
+              layout="fill"
+              objectFit="cover"
+              priority
             />
-          </Stack>
+          </Box>
 
-          <Text fontSize="md">
-            Product Description:
-            {product.description || "No description available."}
-          </Text>
-        </VStack>
-      </Flex>
-    </Container>
+          <VStack flex={1} align="start" spacing={6} color={textColor}>
+            <Flex alignItems="center" flexWrap="wrap">
+              <Heading as="h1" size="2xl" mr={2}>
+                {product.product_name}
+              </Heading>
+              {product.is_premium === 1 && (
+                <Badge colorScheme="green" fontSize="md" py={1} px={2}>
+                  Premium
+                </Badge>
+              )}
+            </Flex>
+
+            <Text fontSize="lg" fontWeight="medium" color="gray.500">
+              {product.category}
+            </Text>
+
+            <Heading as="h2" size="xl" color="blue.500">
+              Rp{product.price.toLocaleString()}
+            </Heading>
+
+            <Text fontSize="md" fontWeight="bold">
+              {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
+            </Text>
+
+            <Divider />
+
+            <HStack spacing={4}>
+              <Button
+                onClick={() => handleQuantityChange(quantity - 1)}
+                isDisabled={quantity === 1}
+                colorScheme="blue"
+                variant="outline"
+                size="md"
+              >
+                <MinusIcon />
+              </Button>
+              <Text
+                fontSize="xl"
+                fontWeight="bold"
+                minW="40px"
+                textAlign="center"
+              >
+                {quantity}
+              </Text>
+              <Button
+                onClick={() => handleQuantityChange(quantity + 1)}
+                isDisabled={quantity === product.stock}
+                colorScheme="blue"
+                variant="outline"
+                size="md"
+              >
+                <AddIcon />
+              </Button>
+            </HStack>
+
+            <Flex
+              width="full"
+              gap={4}
+              flexDirection={{ base: "column", sm: "row" }}
+            >
+              <Button
+                colorScheme="orange"
+                size="lg"
+                flex={1}
+                onClick={() => handleAddToCart(quantity)}
+              >
+                Add to Cart
+              </Button>
+              <Button
+                colorScheme="blue"
+                size="lg"
+                flex={1}
+                onClick={() => handleBuyNow(quantity)}
+              >
+                Buy Now
+              </Button>
+              <IconButton
+                icon={<StarIcon />}
+                onClick={handleWishlistToggle}
+                colorScheme={isInWishlist ? "red" : "gray"}
+                aria-label={
+                  isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"
+                }
+                size="lg"
+                variant={isInWishlist ? "solid" : "outline"}
+              />
+            </Flex>
+
+            <Divider />
+
+            <VStack align="start" spacing={2} width="full">
+              <Text fontSize="lg" fontWeight="semibold">
+                Product Description:
+              </Text>
+              <Text fontSize="md">
+                {product.description || "No description available."}
+              </Text>
+            </VStack>
+          </VStack>
+        </Flex>
+      </Container>
+    </Box>
   );
 };
 

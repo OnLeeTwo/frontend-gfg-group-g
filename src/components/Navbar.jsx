@@ -28,7 +28,7 @@ function Navbar() {
   const logout = useLogout();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const profileLink = role === 'seller' ? '/seller' : '/profile';
+  const profileLink = role === 'seller' ? '/seller' : '/profile'
 
   return (
     <Box as="nav" bg={useColorModeValue('#92c529', 'gray.800')} py={4} shadow="md" position="sticky" top={0} zIndex={10}>
@@ -99,7 +99,7 @@ function Navbar() {
               <NavLink href="/about" onClick={onClose}>About</NavLink>
               {isLoggedIn ? (
                 <>
-                  <NavLink href="/cart" onClick={onClose}>Cart</NavLink>
+                  {role === 'buyer' ? <NavLink href="/cart" onClick={onClose}>Cart</NavLink> : null}
                   <NavLink href={profileLink} onClick={onClose}>Profile</NavLink>
                   <Button
                     onClick={() => {
