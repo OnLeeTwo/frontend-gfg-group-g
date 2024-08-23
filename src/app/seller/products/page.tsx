@@ -80,7 +80,7 @@ const ProductPage = ({ searchParams }: paramsProps) => {
           </Link>
         </div>
         <Separator />
-
+        // @ts-ignore
         <ProductTable
           searchKey="product_name"
           pageNo={Number(searchParams.page) || 1}

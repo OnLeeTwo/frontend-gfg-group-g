@@ -8,6 +8,7 @@ export type User = {
 
 export type Product = {
   id: string;
+  market_id: string;
   product_name: string;
   stock: number;
   price: number;
