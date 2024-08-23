@@ -16,7 +16,6 @@ import OrderDetailsModalSeller from "./OrdersDetailsModalSeller";
 
 const OrderItemSeller = ({ initialOrder }) => {
   const [order, setOrder] = useState(initialOrder);
-  console.log(order)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState(order.status_order);

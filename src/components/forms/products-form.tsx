@@ -65,6 +65,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   }, []);
   
   const defaultValues = initialData || {
+        id: '',
         product_name: '',
         market_id: '',
         description: '',
@@ -100,7 +101,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
       }
   
       const response = initialData
-        ? await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${initialData.product_id}`, {
+        ? await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product/${initialData.id}`, {
             method: "PUT",
             headers: { Authorization: `Bearer ${token}` },
             body: formData,
@@ -143,7 +144,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({
           onSubmit={form.handleSubmit(onSubmit)}
           className="w-full space-y-8"
         >
-                    <FormField
+          {!initialData && (
+            <FormField
             control={form.control}
             name="market_id"
             render={({ field }) => (
@@ -166,6 +168,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
               </FormItem>
             )}
           />
+          )}
           <FormField
             control={form.control}
             name="images"
@@ -267,7 +270,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                 <FormItem>
                   <FormLabel>I want to list this product as a premium quality</FormLabel>
                     <FormControl>
-                      <Input type="checkbox" disabled={loading} {...field} />
+                    <Input
+                      type="checkbox"
+                      disabled={loading}
+                      checked={field.value ?? false}
+                      onChange={(e) => field.onChange(e.target.checked)}
+                    />
                     </FormControl>
                   <FormMessage />
                 </FormItem>
