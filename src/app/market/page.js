@@ -134,6 +134,31 @@ export default function Market() {
               )}
             </Box>
           </Flex>
+          <div className="flex flex-row justify-end items-center gap-12 mt-12">
+            <Box p={4}>
+              <Select
+                sx={{ width: "100px" }}
+                value={limit}
+                onChange={(e) => setLimit(e.target.value)}
+              >
+                {options.map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </Select>
+            </Box>
+            <Button
+              CTA="Previous"
+              onClick={prevPage}
+              disabled={currentPage === 1 && true}
+            />
+            <Button
+              CTA="Next"
+              onClick={nextPage}
+              disabled={currentPage === totalPage && true}
+            />
+          </div>
         </Box>
       </Flex>
     </Container>
