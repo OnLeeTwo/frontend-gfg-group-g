@@ -32,7 +32,7 @@ const ProductPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [isInWishlist, setIsInWishlist] = useState(false);
 
-  const { product, error, isLoading } = useProductFetch(id, token);
+  const { product, error, isLoading } = useProductFetch(id);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -47,17 +47,18 @@ const ProductPage = () => {
   }, [token, product]);
 
   const checkWishlistStatus = async () => {
-    if (!product) return;
-    try {
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/wishlist/${product.id}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      setIsInWishlist(response.data.in_wishlist);
-    } catch (error) {
-      console.error("Error checking wishlist status:", error);
+    if (product) {
+      try {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/wishlist/${product.id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setIsInWishlist(response.data.in_wishlist);
+      } catch (error) {
+        console.error("Error checking wishlist status:", error);
+      }
     }
   };
 
@@ -170,7 +171,7 @@ const ProductPage = () => {
     }
 
     const existingItemIndex = existingCart[product.market_id].findIndex(
-      (item) => item.product_id === product.product_id
+      (item) => item.product_id === product.id
     );
 
     if (existingItemIndex !== -1) {

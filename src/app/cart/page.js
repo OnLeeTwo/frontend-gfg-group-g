@@ -226,48 +226,58 @@ const CartPage = () => {
           <Text fontSize="2xl" fontWeight="bold" mb={4}>
             Cart - {Object.values(localCart).flat().length} items
           </Text>
-          {Object.entries(cartProducts).map(([marketId, marketData]) => (
-            <Box key={marketId} mb={6} bg="gray.100" p={4} borderRadius="md">
-              <Link as={NextLink} href={`/market/${marketId}`}>
-                <Text fontSize="lg" fontWeight="semibold" mb={2}>
-                  {marketData.market_name}
-                </Text>
-              </Link>
-              {marketData.product.map((product) => {
-                const cartItem = localCart[marketId]?.find(
-                  (item) => item.product_id === product.product_id
-                );
-                if (!cartItem) return null;
-                return (
-                  <CartItem
-                    key={`${marketId}-${product.product_id}`}
-                    product={product}
-                    quantity={cartItem.quantity}
-                    onRemove={() => removeItem(marketId, product.product_id)}
-                    onQuantityChange={(newQuantity) =>
-                      updateQuantity(marketId, product.product_id, newQuantity)
-                    }
-                    isSelected={selectedItems.find(
-                      (selected) =>
-                        selected.productId === product.product_id &&
-                        selected.marketId === marketId &&
-                        selected.selected
-                    )}
-                    onToggleSelect={() =>
-                      toggleSelectItem(marketId, product.product_id)
-                    }
-                  />
-                );
-              })}
-            </Box>
-          ))}
+          {Object.values(localCart).flat().length === 0 ? (
+            <Text fontSize="lg" color="gray.500">
+              Your cart is empty.
+            </Text>
+          ) : (
+            Object.entries(cartProducts).map(([marketId, marketData]) => (
+              <Box key={marketId} mb={6} bg="gray.100" p={4} borderRadius="md">
+                <Link as={NextLink} href={`/market/${marketId}`}>
+                  <Text fontSize="lg" fontWeight="semibold" mb={2}>
+                    {marketData.market_name}
+                  </Text>
+                </Link>
+                {marketData.product.map((product) => {
+                  const cartItem = localCart[marketId]?.find(
+                    (item) => item.product_id === product.product_id
+                  );
+                  if (!cartItem) return null;
+                  return (
+                    <CartItem
+                      key={`${marketId}-${product.product_id}`}
+                      product={product}
+                      quantity={cartItem.quantity}
+                      onRemove={() => removeItem(marketId, product.product_id)}
+                      onQuantityChange={(newQuantity) =>
+                        updateQuantity(
+                          marketId,
+                          product.product_id,
+                          newQuantity
+                        )
+                      }
+                      isSelected={selectedItems.find(
+                        (selected) =>
+                          selected.productId === product.product_id &&
+                          selected.marketId === marketId &&
+                          selected.selected
+                      )}
+                      onToggleSelect={() =>
+                        toggleSelectItem(marketId, product.product_id)
+                      }
+                    />
+                  );
+                })}
+              </Box>
+            ))
+          )}
         </Box>
         <Box flex={1}>
           <Box bg="gray.100" p={4} borderRadius="md">
             <Text fontSize="xl" fontWeight="bold" mb={4}>
               Summary
             </Text>
-            <Text mb={2}>Total: Rp{totalAmount.toFixed(2)}</Text>
+            <Text mb={2}>Total: Rp{totalAmount.toLocaleString()}</Text>
             <Button colorScheme="blue" width="full" onClick={handleCheckout}>
               GO TO CHECKOUT
             </Button>
