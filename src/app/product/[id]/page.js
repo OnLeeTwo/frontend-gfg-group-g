@@ -288,7 +288,7 @@ const ProductPage = () => {
 
             <HStack spacing={4}>
               <Button
-                onClick={() => handleQuantityChange(quantity - 1)}
+                onClick={() => decrementQuantity()}
                 isDisabled={quantity === 1}
                 colorScheme="blue"
                 variant="outline"
@@ -305,7 +305,7 @@ const ProductPage = () => {
                 {quantity}
               </Text>
               <Button
-                onClick={() => handleQuantityChange(quantity + 1)}
+                onClick={() => incrementQuantity()}
                 isDisabled={quantity === product.stock}
                 colorScheme="blue"
                 variant="outline"
