@@ -204,7 +204,7 @@ export const MarketForm: React.FC<MarketFormProps> = ({ initialData , sellerId})
                         padding={4}
                         cursor="pointer"
                         _hover={{ bg: 'gray.50' }}
-                        onClick={() => document.getElementById('file-input').click()}
+                        onClick={() => document.getElementById('file-input')?.click()}
                       >
                         <HStack spacing={2}>
                           <Text>{field.value ? field.value.name : 'Click to upload image'}</Text>
