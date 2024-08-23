@@ -3,6 +3,7 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
 import jwt from "jsonwebtoken";
+import { useToast } from "@chakra-ui/react";
 
 const refreshToken = async () => {
   try {
@@ -29,19 +30,56 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [role, setRole] = useState(null);
+  const toast = useToast();
 
   useEffect(() => {
     const checkLoginStatus = () => {
-      const token = localStorage.getItem("access_token");
-      setIsLoggedIn(!!token);
+      const storedToken = localStorage.getItem("access_token");
+
+      if (storedToken) {
+        try {
+          const decodedToken = jwt.decode(storedToken);
+
+          if (decodedToken && decodedToken.exp) {
+            const currentTime = Math.floor(Date.now() / 1000);
+
+            if (decodedToken.exp > currentTime) {
+              setIsLoggedIn(true);
+              return;
+            } else {
+              console.log("token expired");
+              setIsLoggedIn(false);
+              localStorage.removeItem("access_token");
+              localStorage.removeItem("refresh_token");
+              toast({
+                title: "Session Expired",
+                description: "Please log in again.",
+                status: "warning",
+                duration: 3000,
+                isClosable: true,
+              });
+            }
+          }
+        } catch (error) {
+          console.error("Error decoding token:", error);
+        }
+      } else {
+        setIsLoggedIn(false);
+      }
     };
 
     checkLoginStatus();
 
     const checkUser = () => {
-      if (!isLoggedIn) return;
-      const user = jwt.decode(localStorage.getItem("access_token"));
-      setRole(user.role);
+      const storedToken = localStorage.getItem("access_token");
+      if (storedToken) {
+        try {
+          const user = jwt.decode(storedToken);
+          setRole(user.role);
+        } catch (error) {
+          console.error("Error decoding token:", error);
+        }
+      }
     };
 
     checkUser();
