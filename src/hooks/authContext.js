@@ -47,7 +47,6 @@ export const AuthProvider = ({ children }) => {
               setIsLoggedIn(true);
               return;
             } else {
-              console.log("token expired");
               setIsLoggedIn(false);
               localStorage.removeItem("access_token");
               localStorage.removeItem("refresh_token");

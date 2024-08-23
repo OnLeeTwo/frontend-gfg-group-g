@@ -3,8 +3,8 @@
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useParams, useRouter } from 'next/navigation';
-import { Input as ChakraInput } from '@chakra-ui/react';
+import { useRouter } from 'next/navigation';
+import { Input as ChakraInput, Box, VStack, HStack, Text, Spinner} from '@chakra-ui/react';
 import { Button } from '../ui/button';
 import {
   Form,
@@ -29,7 +29,7 @@ type MarketFormValues = z.infer<typeof formSchema>;
 
 interface MarketFormProps {
   initialData: any | null;
-  sellerId: string | null
+  sellerId: any | null
 }
 
 export const MarketForm: React.FC<MarketFormProps> = ({ initialData , sellerId}) => {
@@ -109,6 +109,7 @@ export const MarketForm: React.FC<MarketFormProps> = ({ initialData , sellerId})
           formData.append("images", profile_picture);
         }
         formData.append("seller_id", sellerId);
+        console.log(token)
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/markets`, {
           method: "POST",
           headers: {
@@ -143,66 +144,100 @@ export const MarketForm: React.FC<MarketFormProps> = ({ initialData , sellerId})
   };
 
   return (
-    <>
-      <div className="flex items-center justify-between">
-        <Heading title={title} description={description} />
-      </div>
-      <Separator />
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-8">
-          <div className="gap-8 md:grid md:grid-cols-3">
-            <FormField
-              control={form.control}
-              name="market_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Market Name</FormLabel>
-                  <FormControl>
-                    <ChakraInput disabled={loading} placeholder="Market Name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="location"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Market Location</FormLabel>
-                  <FormControl>
-                    <ChakraInput disabled={loading} placeholder="Market Location" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-            control={form.control}
-            name="profile_picture"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Market Logo</FormLabel>
-                <FormControl>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    disabled={loading}
-                    onChange={(e) => {
-                      field.onChange(e.target.files?.[0]);
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          </div>
-          <Button disabled={loading} className="ml-auto" type="submit">
-            {action}
-          </Button>
-        </form>
-      </Form>
-    </>
+    <Box maxWidth="800px" margin="0 auto" padding="2rem">
+      <VStack spacing={8} align="stretch">
+        <HStack justify="space-between">
+          <Heading title={title} description={description} />
+        </HStack>
+        <Separator />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <VStack spacing={6} align="stretch">
+              <HStack spacing={6}>
+                <FormField
+                  control={form.control}
+                  name="market_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Market Name</FormLabel>
+                      <FormControl>
+                        <ChakraInput
+                          disabled={loading}
+                          placeholder="Market Name"
+                          {...field}
+                          _focus={{ borderColor: 'blue.500', boxShadow: '0 0 0 1px blue.500' }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Market Location</FormLabel>
+                      <FormControl>
+                        <ChakraInput
+                          disabled={loading}
+                          placeholder="Market Location"
+                          {...field}
+                          _focus={{ borderColor: 'blue.500', boxShadow: '0 0 0 1px blue.500' }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </HStack>
+              <FormField
+                control={form.control}
+                name="profile_picture"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Market Logo</FormLabel>
+                    <FormControl>
+                      <Box
+                        borderWidth={1}
+                        borderRadius="md"
+                        padding={4}
+                        cursor="pointer"
+                        _hover={{ bg: 'gray.50' }}
+                        onClick={() => document.getElementById('file-input').click()}
+                      >
+                        <HStack spacing={2}>
+                          <Text>{field.value ? field.value.name : 'Click to upload image'}</Text>
+                        </HStack>
+                        <input
+                          id="file-input"
+                          type="file"
+                          accept="image/*"
+                          disabled={loading}
+                          style={{ display: 'none' }}
+                          onChange={(e) => {
+                            field.onChange(e.target.files?.[0]);
+                          }}
+                        />
+                      </Box>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                disabled={loading}
+                type="submit"
+                colorScheme="blue"
+                isLoading={loading}
+                loadingText="Submitting"
+              >
+                {action}
+              </Button>
+            </VStack>
+          </form>
+        </Form>
+      </VStack>
+    </Box>
   );
-};
+}

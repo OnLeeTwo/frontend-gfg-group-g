@@ -63,7 +63,7 @@ export default function Home() {
 
         {isLoading ? (
           <Flex justify="center" align="center" h="200px">
-            <Spinner size="lg" />
+            <Spinner size="xl" thickness="4px" color="green.500" />
           </Flex>
         ) : error ? (
           <Box mt={10}>
@@ -73,7 +73,10 @@ export default function Home() {
             </Alert>
           </Box>
         ) : (
-          <SimpleGrid columns={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing={6}>
+          <SimpleGrid
+            columns={{ base: 1, sm: 2, md: 3, lg: 4, xl: 5 }}
+            spacing={6}
+          >
             {featuredProducts.map((product) => (
               <ProductWishlistCard
                 key={product.id}
