@@ -5,12 +5,10 @@ import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -19,6 +17,7 @@ import {
 import { Separator } from '../ui/separator';
 import { Heading } from '../ui/heading';
 import { useToast } from '../ui/use-toast';
+import { Input, Select, Checkbox, Textarea, Box, VStack, HStack, Text } from '@chakra-ui/react';
 import React from 'react';
 
 
@@ -134,159 +133,186 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   };
   
   return (
-    <>
-      <div className="flex items-center justify-between">
-        <Heading title={title} description={description} />
-      </div>
-      <Separator />
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-8"
-        >
-          {!initialData && (
-            <FormField
-            control={form.control}
-            name="market_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Market</FormLabel>
-                <FormControl>
-                  <select
-                    disabled={loading}
-                    {...field}
-                  >
-                    <option value="">Select a market</option>
-                    {markets?.map(market => (
-                      <option key={market.market_id} value={market.market_id}>
-                        {market.market_name}
-                      </option>
-                    ))}
-                  </select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          )}
-          <FormField
-            control={form.control}
-            name="images"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Images</FormLabel>
-                <FormControl>
-                <input
-                    type="file"
-                    accept="image/*"
-                    disabled={loading}
-                    onChange={(e) => {
-                      field.onChange(e.target.files?.[0]);
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="gap-8 md:grid md:grid-cols-3">
-            <FormField
-              control={form.control}
-              name="product_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder="Product name"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+    <Box maxWidth="800px" margin="0 auto" padding="2rem">
+      <VStack spacing={8} align="stretch">
+        <HStack justify="space-between">
+          <Heading title={title} description={description} />
+        </HStack>
+        <Separator />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <VStack spacing={6} align="stretch">
+              {!initialData && (
+                <FormField
+                  control={form.control}
+                  name="market_id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Market</FormLabel>
+                      <FormControl>
+                        <Select
+                          disabled={loading}
+                          placeholder="Select a market"
+                          {...field}
+                        >
+                          {markets?.map(market => (
+                            <option key={market.market_id} value={market.market_id}>
+                              {market.market_name}
+                            </option>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               )}
-            />
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={loading}
-                      placeholder="Product description"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Price</FormLabel>
-                  <FormControl>
-                    <Input type="number" disabled={loading} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="stock"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Stock</FormLabel>
-                  <FormControl>
-                    <Input type="number" disabled={loading} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Category</FormLabel>
+              <FormField
+                control={form.control}
+                name="images"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Images</FormLabel>
                     <FormControl>
-                      <Input type="string" disabled={loading} placeholder="Product category" {...field} />
+                      <Box
+                        borderWidth={1}
+                        borderRadius="md"
+                        padding={4}
+                        cursor="pointer"
+                        _hover={{ bg: 'gray.50' }}
+                        onClick={() => document.getElementById('file-input').click()}
+                      >
+                        <HStack spacing={2}>
+                          <Text>{field.value ? field.value.name : 'Click to upload image'}</Text>
+                        </HStack>
+                        <input
+                          id="file-input"
+                          type="file"
+                          accept="image/*"
+                          disabled={loading}
+                          style={{ display: 'none' }}
+                          onChange={(e) => {
+                            field.onChange(e.target.files?.[0]);
+                          }}
+                        />
+                      </Box>
                     </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="is_premium"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>I want to list this product as a premium quality</FormLabel>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <HStack spacing={6}>
+                <FormField
+                  control={form.control}
+                  name="product_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={loading}
+                          placeholder="Product name"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Category</FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={loading}
+                          placeholder="Product category"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </HStack>
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
                     <FormControl>
-                    <Input
-                      type="checkbox"
-                      disabled={loading}
-                      checked={field.value ?? false}
-                      onChange={(e) => field.onChange(e.target.checked)}
-                    />
+                      <Textarea
+                        disabled={loading}
+                        placeholder="Product description"
+                        {...field}
+                      />
                     </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <Button disabled={loading} className="ml-auto" type="submit">
-            {action}
-          </Button>
-        </form>
-      </Form>
-    </>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <HStack spacing={6}>
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Price</FormLabel>
+                      <FormControl>
+                        <Input type="number" disabled={loading} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="stock"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Stock</FormLabel>
+                      <FormControl>
+                        <Input type="number" disabled={loading} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </HStack>
+              <FormField
+                control={form.control}
+                name="is_premium"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Checkbox
+                        disabled={loading}
+                        isChecked={field.value ?? false}
+                        onChange={(e) => field.onChange(e.target.checked)}
+                      >
+                        List this product as premium quality
+                      </Checkbox>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                disabled={loading}
+                type="submit"
+                colorScheme="blue"
+                isLoading={loading}
+                loadingText="Submitting"
+              >
+                {action}
+              </Button>
+            </VStack>
+          </form>
+        </Form>
+      </VStack>
+    </Box>
   );
 };
