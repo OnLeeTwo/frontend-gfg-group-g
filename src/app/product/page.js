@@ -28,6 +28,7 @@ const ProductPage = () => {
     location: [],
     priceMin: "",
     priceMax: "",
+    productName: ""
   });
   const [sortOption, setSortOption] = useState("");
 
@@ -80,6 +81,7 @@ const ProductPage = () => {
     setSortOption(option);
     // Implement sorting logic here
   };
+  
 
   const filteredProducts = products
     .filter(
@@ -88,7 +90,8 @@ const ProductPage = () => {
           filters.category.includes(product.category)) &&
         (filters.priceMin === "" ||
           product.price >= Number(filters.priceMin)) &&
-        (filters.priceMax === "" || product.price <= Number(filters.priceMax))
+        (filters.priceMax === "" || product.price <= Number(filters.priceMax)) &&
+        (filters.productName === "" || product.product_name.toLowerCase().includes(filters.productName.toLowerCase()))
     )
     .sort((a, b) => {
       if (sortOption === "price-asc") return a.price - b.price;
@@ -140,6 +143,23 @@ const ProductPage = () => {
                 </Checkbox>
 
               ))}
+            </VStack>
+          </Box>
+
+          <Box>
+            <Heading size="sm" mb={2}>
+              Search by name
+            </Heading>
+            <VStack align="stretch">
+              <Input
+                placeholder="Product name"
+                type="text"
+                mr={2}
+                value={filters.name}
+                onChange={(e) =>
+                  setFilters((prev) => ({ ...prev, productName: e.target.value }))
+                }
+              />
             </VStack>
           </Box>
 
