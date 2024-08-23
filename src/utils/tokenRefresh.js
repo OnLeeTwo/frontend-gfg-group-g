@@ -1,14 +1,15 @@
-import axios from "axios";
-
 export const refreshToken = async () => {
   try {
     const refreshToken = localStorage.getItem("refresh_token");
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/refresh`,
-      {
-        refresh_token: refreshToken,
-      }
-    );
+    const response = fetch(`${process.env.NEXT_PUBLIC_API_URL}/refresh`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: {
+        refreshToken: refreshToken,
+      },
+    });
 
     if (response.data.access_token) {
       localStorage.setItem("access_token", response.data.access_token);

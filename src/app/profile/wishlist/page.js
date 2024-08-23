@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState, useCallback } from "react";
 import ProductWishlistCard from "@/components/profile/ProductWishlistCard";
+import withAuth from "@/middleware/withAuth";
 
 const UserWishlist = () => {
   const toast = useToast();
@@ -62,10 +63,6 @@ const UserWishlist = () => {
     fetchWishlist();
   }, [fetchWishlist]);
 
-  const handleRefresh = () => {
-    fetchWishlist();
-  };
-
   if (isLoading) {
     return (
       <Flex justify="center" align="center" height="100vh">
@@ -78,7 +75,6 @@ const UserWishlist = () => {
     return (
       <VStack align="center" justify="center" height="100vh" spacing={4}>
         <Text>Error: {error}</Text>
-        <Button onClick={handleRefresh}>Retry</Button>
       </VStack>
     );
   }
@@ -111,10 +107,8 @@ const UserWishlist = () => {
           </Flex>
         </Box>
       )}
-
-      <Button onClick={handleRefresh}>Refresh Wishlist</Button>
     </VStack>
   );
 };
 
-export default UserWishlist;
+export default withAuth(UserWishlist, "buyer");

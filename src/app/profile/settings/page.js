@@ -26,6 +26,7 @@ import {
   ModalCloseButton,
   FormErrorMessage,
 } from "@chakra-ui/react";
+import withAuth from "@/middleware/withAuth";
 
 const UpdateSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
@@ -261,4 +262,4 @@ const AccountSettings = () => {
   );
 };
 
-export default AccountSettings;
+export default withAuth(AccountSettings, "buyer");

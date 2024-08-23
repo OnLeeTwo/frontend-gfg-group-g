@@ -88,7 +88,8 @@ const ProductPage = () => {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-      } 
+
+      }
       setIsInWishlist(!isInWishlist);
       toast({
         title: "Success",
@@ -209,7 +210,6 @@ const ProductPage = () => {
   const handleBuyNow = (qty) => {
     handleAddToCart(qty);
     router.push("/checkout");
-
   };
 
   const incrementQuantity = () => {
