@@ -4,8 +4,7 @@ import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { Input as ChakraInput, Box, VStack, HStack, Text, Spinner} from '@chakra-ui/react';
-import { Button } from '../ui/button';
+import { Input as ChakraInput, Box, VStack, HStack, Text, Spinner, Button} from '@chakra-ui/react';
 import {
   Form,
   FormControl,
