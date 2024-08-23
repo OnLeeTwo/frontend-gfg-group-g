@@ -18,6 +18,7 @@ type paramsProps = {
   };
 };
 
+// @ts-ignore
 const ProductPage = ({ searchParams }: paramsProps) => {
   const [product, setProduct] = useState([]);
   const [totalProduct, setTotalProduct] = useState(0);
@@ -80,7 +81,6 @@ const ProductPage = ({ searchParams }: paramsProps) => {
           </Link>
         </div>
         <Separator />
-        // @ts-ignore
         <ProductTable
           searchKey="product_name"
           pageNo={Number(searchParams.page) || 1}
