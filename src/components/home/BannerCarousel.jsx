@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
-import { Box, Image, Flex, Button } from '@chakra-ui/react';
+import { Box, Image, Flex, Button, VStack, Text } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
+import { useRouter } from 'next/navigation';
 
 const banners = [
   { id: 1, image: 'banner/banner-1.webp', alt: 'Green initiatives' },
-  { id: 2, image: '/banner2.jpg', alt: 'Sustainable living' },
-  { id: 3, image: '/banner3.jpg', alt: 'Eco-friendly products' },
+  { id: 2, image: 'banner/banner-2.webp', alt: 'Eco-friendly products' },
+  { id: 3, image: 'banner/banner-3.webp', alt: 'Sustainable living' },
 ];
 
 export default function BannerCarousel() {
   const [currentBanner, setCurrentBanner] = useState(0);
+  const router = useRouter();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -47,6 +49,40 @@ export default function BannerCarousel() {
           transition="opacity 0.5s ease-in-out"
         />
       ))}
+      
+      <Flex
+        position="absolute"
+        top="0"
+        left="0"
+        right="0"
+        bottom="0"
+        alignItems="center"
+        justifyContent="center"
+        backgroundColor="rgba(0,0,0,0.4)"
+      >
+        <VStack spacing={{ base: 4, md: 6 }}>
+          <Text
+            color="white"
+            fontSize={{ base: "2xl", md: "4xl", lg: "5xl" }}
+            fontWeight="bold"
+            textAlign="center"
+            px={4}
+          >
+            Welcome to SucoMart
+          </Text>
+          <Button
+            colorScheme="green"
+            size={{ base: "md", md: "lg" }}
+            onClick={() => {
+              router.push("/market");
+            }}
+          >
+            Shop Now
+          </Button>
+        </VStack>
+      </Flex>
+
+      {/* Indicator dots */}
       <Flex
         position="absolute"
         bottom="20px"
@@ -66,12 +102,16 @@ export default function BannerCarousel() {
           />
         ))}
       </Flex>
+
+      {/* Navigation buttons */}
       <Button
         position="absolute"
         left="10px"
         top="50%"
         transform="translateY(-50%)"
         onClick={prevBanner}
+        size={{ base: "sm", md: "md" }}
+        display={{ base: "none", md: "flex" }}
       >
         <ChevronLeftIcon />
       </Button>
@@ -81,6 +121,8 @@ export default function BannerCarousel() {
         top="50%"
         transform="translateY(-50%)"
         onClick={nextBanner}
+        size={{ base: "sm", md: "md" }}
+        display={{ base: "none", md: "flex" }}
       >
         <ChevronRightIcon />
       </Button>
