@@ -138,6 +138,7 @@ const ProductPage = () => {
                 >
                   {category}
                 </Checkbox>
+
               ))}
             </VStack>
           </Box>

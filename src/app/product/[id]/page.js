@@ -88,6 +88,7 @@ const ProductPage = () => {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
+
       }
       setIsInWishlist(!isInWishlist);
       toast({
