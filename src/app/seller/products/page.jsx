@@ -12,19 +12,12 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import withAuth from '@/middleware/withAuth';
 
-type paramsProps = {
-  searchParams: {
-    [key: string]: string | string[] | undefined;
-  };
-};
-
-// @ts-ignore
-const ProductPage = ({ searchParams }: paramsProps) => {
+const ProductPage = ({ searchParams }) => {
   const [product, setProduct] = useState([]);
   const [totalProduct, setTotalProduct] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchProductData = async () => {
