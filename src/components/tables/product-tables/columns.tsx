@@ -26,6 +26,14 @@ export const columns: ColumnDef<Product>[] = [
     enableHiding: true
   },
   {
+    accessorKey: 'id',
+    header: 'PRODUCT_ID'
+  },
+  {
+    accessorKey: 'market_id',
+    header: 'MARKET_ID'
+  },
+  {
     accessorKey: 'product_name',
     header: 'NAME'
   },

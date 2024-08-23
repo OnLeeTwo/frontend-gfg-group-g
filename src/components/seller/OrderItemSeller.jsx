@@ -10,10 +10,12 @@ import {
   Button,
   Divider,
   useToast,
+  Select,
 } from "@chakra-ui/react";
 import OrderDetailsModalSeller from "./OrdersDetailsModalSeller";
 
-const OrderItemSeller = ({ order }) => {
+const OrderItemSeller = ({ initialOrder }) => {
+  const [order, setOrder] = useState(initialOrder);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState(order.status_order);
@@ -126,7 +128,10 @@ const OrderItemSeller = ({ order }) => {
       if (!response.ok) {
         throw new Error("Failed to update order status");
       }
-      setOrderStatus(selectedStatus);
+      setOrder(prevOrder => ({
+        ...prevOrder,
+        status_order: selectedStatus
+      }));
       toast({
         title: `Order status updated to ${selectedStatus}`,
         status: "success",
@@ -199,6 +204,7 @@ const OrderItemSeller = ({ order }) => {
           onChange={(e) => setSelectedStatus(e.target.value)}
           isDisabled={isLoading}
           aria-label="Update order status"
+          width="auto" 
         >
           <option value="pending">Pending</option>
           <option value="shipping">Shipping</option>

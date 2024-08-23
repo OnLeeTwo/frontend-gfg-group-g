@@ -35,7 +35,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   
       if (response.ok) {
         setOpen(false);
-        router.push('/seller/market');
+        router.refresh();
       } else {
         const result = await response.json();
         console.error('Error deleting market:', result.message);

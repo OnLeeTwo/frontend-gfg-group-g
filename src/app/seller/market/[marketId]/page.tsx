@@ -52,7 +52,7 @@ const MarketPageForm = () => {
   return ( 
     <PageContainer scrollable={true}>
       <div className="space-y-4">
-        <MarketForm initialData={initialData} key={initialData?.market_id || 'new' } />
+        <MarketForm initialData={initialData} key={initialData?.market_id || 'new' } sellerId={null} />
       </div>
     </PageContainer>
   );

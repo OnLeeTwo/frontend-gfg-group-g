@@ -46,6 +46,7 @@ const CheckoutPage = () => {
   const [addresses, setAddresses] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState("Debit card");
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
     const cart = searchParams.get("cart");
@@ -438,10 +439,10 @@ const CheckoutPage = () => {
                       <VStack align="start" flex={1}>
                         <Text fontWeight="bold">{item.name}</Text>
                         <Text>
-                          {quantity} × Rp{item.price.toFixed(2)}
+                          {quantity} × Rp{item.price.toLocaleString()}
                         </Text>
                       </VStack>
-                      <Text>Rp{(item.price * quantity).toFixed(2)}</Text>
+                      <Text>Rp{(item.price * quantity).toLocaleString()}</Text>
                     </HStack>
                   );
                 })}
@@ -484,19 +485,21 @@ const CheckoutPage = () => {
 
             <HStack justify="space-between">
               <Text>Subtotal</Text>
-              <Text>Rp{calculateSubtotal().toFixed(2)}</Text>
-            </HStack>
-            <HStack justify="space-between">
-              <Text>Shipping</Text>
-              <Text>Rp{calculateShipping().toFixed(2)}</Text>
+              <Text>Rp{calculateSubtotal().toLocaleString()}</Text>
             </HStack>
             <HStack justify="space-between">
               <Text>Taxes included (11%)</Text>
-              <Text>Rp{calculateTaxes(calculateSubtotal()).toFixed(2)}</Text>
+              <Text>
+                Rp{calculateTaxes(calculateSubtotal()).toLocaleString()}
+              </Text>
+            </HStack>
+            <HStack justify="space-between">
+              <Text>Shipping</Text>
+              <Text>Rp{calculateShipping().toLocaleString()}</Text>
             </HStack>
             <HStack justify="space-between">
               <Text>Admin fee</Text>
-              <Text>Rp{calculateAdmin().toFixed(2)}</Text>
+              <Text>Rp{calculateAdmin().toLocaleString()}</Text>
             </HStack>
             {Object.entries(promotions).map(([marketId, promotion]) => (
               <HStack key={marketId} justify="space-between" color="green.500">
@@ -507,7 +510,7 @@ const CheckoutPage = () => {
             <Divider />
             <HStack justify="space-between" fontWeight="bold">
               <Text>Total</Text>
-              <Text>Rp{calculateTotal().toFixed(2)}</Text>
+              <Text>Rp{calculateTotal().toLocaleString()}</Text>
             </HStack>
           </VStack>
         </Box>

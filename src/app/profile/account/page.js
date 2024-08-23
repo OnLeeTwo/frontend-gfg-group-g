@@ -213,6 +213,13 @@ const UserProfile = () => {
     );
   }
 
+  const isPlaceholderImage =
+    user.profile_picture && user.profile_picture.endsWith("None");
+
+  const imageUrl = isPlaceholderImage
+    ? "/default_placeholder_user.jpg"
+    : user.profile_picture;
+
   return (
     <div>
       <VStack align="stretch" spacing={8}>
@@ -222,7 +229,7 @@ const UserProfile = () => {
 
         <Flex>
           <Image
-            src={user.profile_picture || "/default_placeholder_user.png"}
+            src={imageUrl}
             alt="Profile Picture"
             width={125}
             height={125}

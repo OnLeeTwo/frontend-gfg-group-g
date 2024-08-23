@@ -92,7 +92,7 @@ const CartItem = ({
           </Text>
         </VStack>
         <VStack align="end">
-          <Text fontWeight="bold">Rp{product.price.toFixed(2)}</Text>
+          <Text fontWeight="bold">Rp{product.price.toLocaleString()}</Text>
           <Button
             leftIcon={<DeleteIcon />}
             colorScheme="red"
