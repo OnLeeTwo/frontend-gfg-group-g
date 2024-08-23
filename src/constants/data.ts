@@ -44,10 +44,4 @@ export const navItems: NavItem[] = [
     icon: "products",
     label: "product",
   },
-  {
-    title: "Promotions",
-    href: "/seller/promotions",
-    icon: "promotions",
-    label: "kanban",
-  },
 ];

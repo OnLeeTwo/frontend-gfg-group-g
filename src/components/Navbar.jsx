@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useLogout } from '../hooks/logout'
 import { useAuth } from '../hooks/authContext'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Box,
   Flex,
@@ -27,8 +27,13 @@ function Navbar() {
   const { isLoggedIn, role } = useAuth();
   const logout = useLogout();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [profileLink, setProfileLink] = useState('/profile');
 
-  const profileLink = role === 'seller' ? '/seller' : '/profile'
+  useEffect(() => {
+    if (role) {
+      setProfileLink(role === 'seller' ? '/seller' : '/profile');
+    }
+  }, [role]);
 
   return (
     <Box as="nav" bg={useColorModeValue('#92c529', 'gray.800')} py={4} shadow="md" position="sticky" top={0} zIndex={10}>

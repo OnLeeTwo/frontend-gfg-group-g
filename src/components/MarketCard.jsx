@@ -3,35 +3,40 @@ import {
   Stack,
   Heading,
   Card,
-  ButtonGroup,
-  Button,
   Text,
   Flex,
   CardBody,
   CardHeader,
-  CardFooter,
+  Box,
 } from "@chakra-ui/react";
-import Link from "next/link";
 
 export default function MarketCard({ name, image, location }) {
+  function isImageURL(url) {
+    const fileExtensions = ['.png', '.jpg', '.jpeg'];
+    return fileExtensions.some(extension => url.toLowerCase().endsWith(extension));
+  }
+
+  const imageUrl = isImageURL(image) ? image : `/default_placeholder_market.jpg`;
+
   return (
-    <Card maxW="md" maxHeight={500} height={300}>
-      <CardHeader>
-        <Flex spacing="2">
-          <Image objectFit="cover" src={image} alt={`Market ${name} on ${location}`} />
-        </Flex>
+    <Card maxW="sm" height="100%">
+      <CardHeader p={0}>
+        <Box height="200px" width="100%">
+          <Image
+            objectFit="cover"
+            src={imageUrl}
+            alt={`Market ${name} on ${location}`}
+            width="100%"
+            height="100%"
+          />
+        </Box>
       </CardHeader>
       <CardBody>
-        <Stack mt="2" spacing="1">
+        <Stack spacing="3">
           <Heading size="md">{name}</Heading>
-          <Text fontSize="sm">
-            {location}
-          </Text>
+          <Text fontSize="sm">{location}</Text>
         </Stack>
       </CardBody>
-
-    
     </Card>
   );
-  
 }

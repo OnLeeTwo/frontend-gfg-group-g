@@ -74,7 +74,19 @@ const CheckoutPage = () => {
 
   useEffect(() => {
     if (user) {
-      setAddresses(user.address || []);
+      if (!user.address) {
+        toast({
+          title: "Error",
+          description: "Please add an address to your profile first.",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+        setTimeout(() => {
+          router.push("/profile");
+        }, 3000);
+      }
+      setAddresses(user.address);
     }
   }, [user]);
 

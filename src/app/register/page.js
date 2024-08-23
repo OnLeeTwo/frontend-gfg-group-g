@@ -23,7 +23,9 @@ import {
 import RoleSelection from "./role_selection";
 
 const validationSchema = Yup.object({
-  email: Yup.string().email("Invalid email address").required("Required"),
+  email: Yup.string()
+    .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email address")
+    .required("Required"),
   password: Yup.string()
     .min(8, "Must be at least 8 characters")
     .required("Required"),
@@ -79,9 +81,7 @@ export default function Register() {
             duration: 5000,
             isClosable: true,
           });
-          setTimeout(() => {
-            router.push("/login");
-          }, 3000);
+          router.push("/login?firstTimeLogin=true");
         } else {
           throw new Error(data.error || "Registration failed");
         }

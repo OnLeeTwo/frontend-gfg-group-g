@@ -41,11 +41,17 @@ const UserProfile = () => {
     onOpen: onAddressOpen,
     onClose: onAddressClose,
   } = useDisclosure();
+  const {
+    isOpen: isFirstLoginModalOpen,
+    onOpen: onFirstLoginModalOpen,
+    onClose: onFirstLoginModalClose,
+  } = useDisclosure();
   const [profilePicture, setProfilePicture] = useState(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState(null);
   const [addresses, setAddresses] = useState([]);
   const [editingAddress, setEditingAddress] = useState(null);
+  const [isFirstLogin, setIsFirstLogin] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -60,8 +66,22 @@ const UserProfile = () => {
       setName(user.name || "");
       setEmail(user.email || "");
       setAddresses(user.address || []);
+      setIsFirstLogin(!user.name || user.address.length === 0);
+      if (!user.name && !user.address) {
+        onFirstLoginModalOpen();
+      }
     }
   }, [user]);
+
+  const handleFirstLogin = () => {
+    if (isFirstLogin) {
+      onFirstLoginModalOpen();
+    }
+  };
+
+  useEffect(() => {
+    handleFirstLogin();
+  }, [isFirstLogin]);
 
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
@@ -220,6 +240,50 @@ const UserProfile = () => {
     ? "/default_placeholder_user.jpg"
     : user.profile_picture;
 
+  const FirstLoginModal = ({ isOpen, onClose }) => {
+    const handleSetupProfile = () => {
+      onClose();
+      onProfileOpen();
+    };
+
+    const handleAddAddress = () => {
+      onClose();
+      onAddressOpen();
+    };
+
+    const handleSkip = () => {
+      setIsFirstLogin(false);
+      onClose();
+    };
+
+    return (
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Welcome to Your Account!</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text mb={4}>
+              It looks like your profile is incomplete. Would you like to set it
+              up now?
+            </Text>
+            <VStack spacing={4}>
+              <Button onClick={handleSetupProfile} width="full">
+                Set Up Profile
+              </Button>
+              <Button onClick={handleAddAddress} width="full">
+                Add Address
+              </Button>
+              <Button onClick={handleSkip} variant="outline" width="full">
+                Skip for Now
+              </Button>
+            </VStack>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    );
+  };
+
   return (
     <div>
       <VStack align="stretch" spacing={8}>
@@ -342,6 +406,11 @@ const UserProfile = () => {
         }}
         onSubmit={handleAddressSubmit}
         initialData={editingAddress}
+      />
+
+      <FirstLoginModal
+        isOpen={isFirstLoginModalOpen}
+        onClose={onFirstLoginModalClose}
       />
     </div>
   );

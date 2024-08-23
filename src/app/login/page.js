@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
@@ -18,18 +18,27 @@ import {
   Link,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/hooks/authContext";
 
 const validationSchema = Yup.object({
-  email: Yup.string().email("Invalid email address").required("Required"),
+  email: Yup.string()
+    .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email address")
+    .required("Required"),
   password: Yup.string().required("Required"),
 });
 
 export default function Login() {
   const toast = useToast();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { setIsLoggedIn } = useAuth();
+  const [isFirstTimeLogin, setIsFirstTimeLogin] = useState(false);
+
+  useEffect(() => {
+    const firstTimeLogin = searchParams.get("firstTimeLogin");
+    setIsFirstTimeLogin(firstTimeLogin === "true");
+  }, [searchParams]);
 
   const formik = useFormik({
     initialValues: {
@@ -65,7 +74,12 @@ export default function Login() {
           localStorage.setItem("access_token", data.access_token);
           localStorage.setItem("refresh_token", data.refresh_token);
           setIsLoggedIn(true);
-          router.push("/home");
+
+          if (isFirstTimeLogin) {
+            router.push("/profile/account");
+          } else {
+            router.push("/home");
+          }
         } else {
           throw new Error(data.error || "Login failed");
         }

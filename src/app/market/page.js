@@ -20,6 +20,7 @@ import { Button } from "@/components/Button";
 import { useState } from "react";
 import { useDataPaginate } from "@/hooks/usePaginate";
 import { LoadingPage } from "@/components/Loading";
+import { useBreakpointValue } from "@chakra-ui/react";
 import Link from "next/link";
 
 export default function Market() {
@@ -49,7 +50,6 @@ export default function Market() {
     }));
   };
 
-  console.log(data);
   const filteredMarkets = data.filter(
     (market) =>
       filters.location.length === 0 ||
@@ -60,10 +60,18 @@ export default function Market() {
     setSearchQuery(name);
     setCurrent(true);
   };
+
   return (
-    <Container maxW="container.xl" py={10}>
-      <Flex>
-        <Box width="250px" p={4} borderRight="1px" borderColor="gray.200">
+    <Container maxW="container.xl" py={5}>
+      <Flex direction={{ base: "column", md: "row" }}>
+        <Box
+          width={{ base: "100%", md: "250px" }}
+          p={4}
+          borderRight={{ base: "none", md: "1px" }}
+          borderBottom={{ base: "1px", md: "none" }}
+          borderColor="gray.200"
+          mb={{ base: 4, md: 0 }}
+        >
           <VStack align="stretch" spacing={6}>
             <Box>
               <Heading size="md" mb={2}>
@@ -76,7 +84,6 @@ export default function Market() {
                 Location
               </Heading>
               <VStack align="stretch">
-                {/* Dynamically generate checkboxes based on unique categories */}
                 {[...new Set(data.map((p) => p.location))].map((location) => (
                   <Checkbox
                     key={location}
@@ -90,52 +97,69 @@ export default function Market() {
             </Box>
           </VStack>
         </Box>
-        <Box width="75%" p={4}>
-          <Flex direction="row" gap={2} mb={4}>
+        <Box width={{ base: "100%", md: "75%" }} p={4}>
+          <Flex direction={{ base: "column", sm: "row" }} gap={2} mb={4}>
             <Input
               placeholder="Search by market name"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-            <Button onClick={handleSubmit} CTA="CARI"></Button>
+            <Button
+              onClick={handleSubmit}
+              CTA="CARI"
+              width={{ base: "100%", sm: "auto" }}
+            ></Button>
           </Flex>
-          <Flex direction="row" gap={2} mb={4}>
-            <Box columns={5} spacing={4}>
-              {isLoading ? (
-                <LoadingPage />
-              ) : error ? (
-                <Box mt={10} mb={10}>
-                  <Alert status="error">
-                    <AlertIcon />
-                    Market tidak ditemukan
-                  </Alert>
-                </Box>
-              ) : data.length === 0 ? (
-                <Box mt={10} mb={10}>
-                  <Alert status="warning">
-                    <AlertIcon />
-                    Market tidak ditemukan
-                  </Alert>
-                </Box>
-              ) : (
-                <Grid templateColumns="repeat(6, 1fr)" gap={3}>
-                  {filteredMarkets.map((item) => (
-                    <div key={item.market_id}>
-                      <Link href={`/market/${item.market_id}`}>
-                        <MarketCard
-                          name={item.market_name}
-                          image={item.profile_pict}
-                          location={item.location}
-                        />{" "}
-                      </Link>
-                    </div>
-                  ))}
-                </Grid>
-              )}
-            </Box>
-          </Flex>
-          <div className="flex flex-row justify-end items-center gap-12 mt-12">
-            <Box p={4}>
+          <Box mb={4}>
+            {isLoading ? (
+              <LoadingPage />
+            ) : error ? (
+              <Box mt={5} mb={5}>
+                <Alert status="error">
+                  <AlertIcon />
+                  Market tidak ditemukan
+                </Alert>
+              </Box>
+            ) : data.length === 0 ? (
+              <Box mt={5} mb={5}>
+                <Alert status="warning">
+                  <AlertIcon />
+                  Market tidak ditemukan
+                </Alert>
+              </Box>
+            ) : (
+              <Grid
+                templateColumns={{
+                  base: "repeat(1, 1fr)",
+                  sm: "repeat(2, 1fr)",
+                  md: "repeat(3, 1fr)",
+                  lg: "repeat(4, 1fr)",
+                  xl: "repeat(5, 1fr)",
+                }}
+                gap={3}
+              >
+                {filteredMarkets.map((item) => (
+                  <div key={item.market_id}>
+                    <Link href={`/market/${item.market_id}`}>
+                      <MarketCard
+                        name={item.market_name}
+                        image={item.profile_pict}
+                        location={item.location}
+                      />
+                    </Link>
+                  </div>
+                ))}
+              </Grid>
+            )}
+          </Box>
+          <Flex
+            direction={{ base: "column", sm: "row" }}
+            justifyContent="flex-end"
+            alignItems="center"
+            gap={{ base: 4, sm: 12 }}
+            mt={6}
+          >
+            <Box>
               <Select
                 sx={{ width: "100px" }}
                 value={limit}
@@ -148,17 +172,19 @@ export default function Market() {
                 ))}
               </Select>
             </Box>
-            <Button
-              CTA="Previous"
-              onClick={prevPage}
-              disabled={currentPage === 1 && true}
-            />
-            <Button
-              CTA="Next"
-              onClick={nextPage}
-              disabled={currentPage === totalPage && true}
-            />
-          </div>
+            <Flex gap={2}>
+              <Button
+                CTA="Previous"
+                onClick={prevPage}
+                disabled={currentPage === 1}
+              />
+              <Button
+                CTA="Next"
+                onClick={nextPage}
+                disabled={currentPage === totalPage}
+              />
+            </Flex>
+          </Flex>
         </Box>
       </Flex>
     </Container>
