@@ -58,6 +58,7 @@ if (loading) {
         <ProductForm
           initialData={initialData}
           key={initialData?.id || 'new' }
+          markets={null}
         />
       </div>
     </ScrollArea>

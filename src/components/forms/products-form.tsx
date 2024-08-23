@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { Button } from '../ui/button';
 import {
   Form,
   FormControl,
@@ -17,7 +16,7 @@ import {
 import { Separator } from '../ui/separator';
 import { Heading } from '../ui/heading';
 import { useToast } from '../ui/use-toast';
-import { Input, Select, Checkbox, Textarea, Box, VStack, HStack, Text } from '@chakra-ui/react';
+import { Input, Select, Checkbox, Textarea, Box, VStack, HStack, Text, Button} from '@chakra-ui/react';
 import React from 'react';
 
 
@@ -180,7 +179,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                         padding={4}
                         cursor="pointer"
                         _hover={{ bg: 'gray.50' }}
-                        onClick={() => document.getElementById('file-input').click()}
+                        onClick={() => document.getElementById('file-input')?.click()}
                       >
                         <HStack spacing={2}>
                           <Text>{field.value ? field.value.name : 'Click to upload image'}</Text>

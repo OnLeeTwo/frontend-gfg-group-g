@@ -1,6 +1,8 @@
 'use client';
 
 import PageContainer from '../../../components/layout/page-container';
+import { columns } from '../../../components/tables/product-tables/columns';
+import { ProductTable } from '../../../components/tables/product-tables/client';
 import { buttonVariants } from '../../../components/ui/button';
 import { Heading } from '../../../components/ui/heading';
 import { Separator } from '../../../components/ui/separator';
@@ -9,49 +11,42 @@ import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import withAuth from '@/middleware/withAuth';
-import { PromotionsTable } from '@/components/tables/promotion-tables/client';
-import { columns } from '@/components/tables/promotion-tables/columns';
 
-type paramsProps = {
-  searchParams: {
-    [key: string]: string | string[] | undefined;
-  };
-};
-
-const PromotionPage = ({ searchParams }: paramsProps) => {
-  const [promotion, setPromotion] = useState([]);
-  const [totalPromotions, setTotalPromotions] = useState(0);
+const ProductPage = ({ searchParams }) => {
+  const [product, setProduct] = useState([]);
+  const [totalProduct, setTotalProduct] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchPromotionsData = async () => {
+    const fetchProductData = async () => {
+      const page = Number(searchParams.page) || 1;
+      const perPage = Number(searchParams.limit) || 10;
+      const name = searchParams.search || null;
 
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/promotion`,{
-            method: 'GET',
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-            },
-          }
+          `${process.env.NEXT_PUBLIC_API_URL}/products?page=${page}&per_page=${perPage}` +
+          (name ? `&name=${name}` : '')
         );
-        const fetchpromotions = await res.json();
+        const fetchProduct = await res.json();
 
-        if (fetchpromotions.success) {
-          setPromotion(fetchpromotions.data);
+        if (fetchProduct.success) {
+          setProduct(fetchProduct.data);
+          setTotalProduct(fetchProduct.total_items);
+          setPageCount(fetchProduct.total_pages);
         } else {
-          setError(`Error fetching promotions data: ${fetchpromotions.message}`);
+          setError(`Error fetching product data: ${fetchProduct.message}`);
         }
       } catch (error) {
-        setError('Error fetching promotions data.');
+        setError('Error fetching product data.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPromotionsData();
+    fetchProductData();
   }, [searchParams]);
 
   if (loading) {
@@ -67,25 +62,24 @@ const PromotionPage = ({ searchParams }: paramsProps) => {
       <div className="space-y-4">
         <div className="flex items-start justify-between">
           <Heading
-            title={`All promotionss`}
-            description="Manage all promotionss that you have"
+            title={`All Products`}
+            description="Manage all products that you have"
           />
 
           <Link
-            href={'../seller/promotions/new'}
+            href={'../seller/products/new'}
             className={cn(buttonVariants({ variant: 'default' }))}
           >
             <Plus className="mr-2 h-4 w-4" /> Add New
           </Link>
         </div>
         <Separator />
-
-        <PromotionsTable
-          searchKey="code"
+        <ProductTable
+          searchKey="product_name"
           pageNo={Number(searchParams.page) || 1}
           columns={columns}
-          totalpromotions={totalPromotions}
-          data={promotion}
+          totalProduct={totalProduct}
+          data={product}
           pageCount={pageCount}
         />
       </div>
@@ -93,4 +87,4 @@ const PromotionPage = ({ searchParams }: paramsProps) => {
   );
 };
 
-export default withAuth(PromotionPage, 'seller');
+export default withAuth(ProductPage, 'seller');

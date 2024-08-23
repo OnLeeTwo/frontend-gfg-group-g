@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import jwt from "jsonwebtoken";
 
 const withAuth = (WrappedComponent, requiredRole) => {
-  return (props) => {
+  const ComponentWithAuth = (props) => {
     const toast = useToast();
     const router = useRouter();
 
@@ -39,6 +39,12 @@ const withAuth = (WrappedComponent, requiredRole) => {
 
     return <WrappedComponent {...props} />;
   };
+
+  ComponentWithAuth.displayName = `withAuth(${
+    WrappedComponent.displayName || WrappedComponent.name || "Component"
+  })`;
+
+  return ComponentWithAuth;
 };
 
 export default withAuth;

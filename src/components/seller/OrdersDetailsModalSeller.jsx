@@ -74,7 +74,7 @@ return (
         ) : orderDetails ? (
           <VStack align="stretch" spacing={4}>
             {orderDetails.map((item) => (
-              <Box>
+              <Box key={item.product_id}>
                 <Text fontWeight="bold" fontSize={'lg'}>{item.market_name}</Text>
                 <HStack key={item.product_id} spacing={4} mt={2} align="start">
                   <Image src={item.product_images} alt="Product" boxSize="50px" objectFit="cover" />

@@ -132,7 +132,7 @@ export default function Login() {
           </VStack>
         </form>
         <Text mt={4} textAlign="center">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link as={NextLink} href="/register" color="blue.500">
             Register here
           </Link>
