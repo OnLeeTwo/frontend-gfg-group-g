@@ -16,6 +16,14 @@ export type Product = {
   is_premium: string;
 };
 
+export type Promotion = {
+  promotion_id: string;
+  code: string;
+  discount_value: number;
+  start_date: string;
+  end_date: string;
+};
+
 export const navItems: NavItem[] = [
   {
     title: "Dashboard",
