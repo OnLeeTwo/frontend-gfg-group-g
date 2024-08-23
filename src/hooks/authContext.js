@@ -45,19 +45,25 @@ export const AuthProvider = ({ children }) => {
 
             if (decodedToken.exp > currentTime) {
               setIsLoggedIn(true);
-              return;
-            } else {
-              setIsLoggedIn(false);
-              localStorage.removeItem("access_token");
-              localStorage.removeItem("refresh_token");
-              toast({
-                title: "Session Expired",
-                description: "Please log in again.",
-                status: "warning",
-                duration: 3000,
-                isClosable: true,
-              });
+              try {
+                const user = jwt.decode(storedToken);
+                setRole(user.role);
+              } catch (error) {
+                console.error("Error decoding token:", error);
+                setRole(null);
+              }
             }
+          } else {
+            setIsLoggedIn(false);
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("refresh_token");
+            toast({
+              title: "Session Expired",
+              description: "Please log in again.",
+              status: "warning",
+              duration: 3000,
+              isClosable: true,
+            });
           }
         } catch (error) {
           console.error("Error decoding token:", error);
@@ -68,20 +74,6 @@ export const AuthProvider = ({ children }) => {
     };
 
     checkLoginStatus();
-
-    const checkUser = () => {
-      const storedToken = localStorage.getItem("access_token");
-      if (storedToken) {
-        try {
-          const user = jwt.decode(storedToken);
-          setRole(user.role);
-        } catch (error) {
-          console.error("Error decoding token:", error);
-        }
-      }
-    };
-
-    checkUser();
 
     const refreshInterval = setInterval(async () => {
       await refreshToken();
